@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 class Booking(models.Model):
-    user = models.ManyToManyField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     date = models.DateTimeField()
     name = models.CharField(max_length=30, null=True, blank=True)
 
