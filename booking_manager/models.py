@@ -1,7 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import User
+from address.models import AddressField
 
 # Create your models here.
+
+class Client(models.Model):
+    client = models.OneToOneField(User, on_delete=models.CASCADE)
+
+class Order(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    address = AddressField(on_delete=models.CASCADE, null=False, blank=False)
+    date = models.DateTimeField()
+
 
 class Booking(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
