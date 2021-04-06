@@ -1,4 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-    Hola
+    {% if request.user.is_authenticated %}
+        <h3>
+            Hola <i><u>{{ request.user.username }}</u></i>
+        </h3>
+        {% else %}
+        <h3><a class="text-body" href="{% url 'login' %}">Login</a> or <a class="text-body" href="{% url 'register' %}">Sign up</a></h3>
+    {% endif %}
 {% endblock %}
