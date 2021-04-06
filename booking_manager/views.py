@@ -1,3 +1,4 @@
+from django.contrib.auth import login
 from django.views.generic import FormView, TemplateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import UserCreationForm
@@ -18,6 +19,12 @@ class Register(FormView):
     form_class = UserCreationForm
     redirect_authenticated_user = True
     success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        user = form.save()
+        if user is not None:
+            login(self.request, user)
+        return super().form_valid(form)
 
 
 class Home(TemplateView):

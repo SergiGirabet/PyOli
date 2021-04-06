@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 # from django_address.models import AddressField
 from django_address.models import AddressModel
 
-# Create your models here.
 
 class Client(models.Model):
     client = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -19,7 +18,7 @@ class Order(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{type(self).__name__}(id={self.id}, client={self.client})"
+        return f"{type(self).__name__}(id={self. id}, client={self.client})"
 
 
 class Table(models.Model):
