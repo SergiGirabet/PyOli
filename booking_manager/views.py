@@ -1,7 +1,6 @@
-from django.views.generic import FormView, ListView
+from django.views.generic import FormView, TemplateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import UserCreationForm
-from .models import Booking
 from django.urls import reverse_lazy
 
 
@@ -21,6 +20,5 @@ class Register(FormView):
     success_url = reverse_lazy('home')
 
 
-class Home(ListView):
-    model = Booking
+class Home(TemplateView):
     template_name = "home.html"
