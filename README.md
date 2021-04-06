@@ -1,19 +1,24 @@
-To modify: 
-- UML add to Product model "Description" field.
-- Modify "Reserve" field to "Reserved"
+# PyOli
 
-Classes fetes:
-- Booking
-- Table
-- Order (using GOOGLE MAPS API)
+Booking and order manager for the restaurant **Pa i oli**.
 
+- Clients can book a table or order food.
+- Restaurant administrators can add food to deliver, tables in the restaraunt and manage pending orders and table
+  bookings.
+  
+## Run
+```bash
+  python3 manage.py runserver
+```
 
-API:
+Admin test user:
+- user: alex
+- pass: alex
 
-- We have used a GOOGLE MAPS API in the field 'address' of the Order class. 
+## Other
 
-    - Note that:
-A key is personal and private, each member needs to have their own secret key.
-Such keys can be hidden from the code in several ways, we have decided that in order to everyone has the same environment we will all have the API key stored as an environment variable in our system.
-
-You must define an environment variable in your system with the name GOOGLE_API_KEY to get it to work.
+Google Maps API:
+- We plan to use GOOGLE MAPS API in the field 'address' of the Order class.
+    - Note that: A key is personal and private, each member needs to have their own secret key. Such keys can be hidden from the
+      code in several ways, we have decided that in order to everyone has the same environment we will all have the API
+      key stored as an environment variable in our system. So, you must define an environment variable in your system with the name GOOGLE_API_KEY to get it to work.
