@@ -1,24 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import User
-# from django_address.models import AddressField
-from django_address.models import AddressModel
 
 
 class Client(models.Model):
-    client = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name='user_id', on_delete=models.CASCADE)
+    phone_number = models.DecimalField(decimal_places=0, max_digits=9, blank=True, null=True)
 
     def __str__(self):
-        return f"{type(self).__name__}(id={self.id}, username={self.client.username})"
+        return f"{type(self).__name__}(id={self.id}, username={self.user.username})"
 
 
 class Order(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    address = AddressModel()  # default for null & blank is false
+    address = models.CharField(max_length=150)
     date_order = models.DateTimeField()
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{type(self).__name__}(id={self. id}, client={self.client})"
+        return f"{type(self).__name__}(id={self.id}, client={self.client})"
 
 
 class Table(models.Model):
