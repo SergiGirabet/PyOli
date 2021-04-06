@@ -8,7 +8,7 @@ Booking and order manager for the restaurant **Pa i oli**.
   
 ## Run
 ```bash
-  python3 manage.py runserver
+python3 manage.py runserver
 ```
 
 Admin test user:
