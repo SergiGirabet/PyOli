@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from address.models import AddressField
+# from django_address.models import AddressField
+from django_address.models import AddressModel
 
 # Create your models here.
 
@@ -13,7 +14,7 @@ class Client(models.Model):
 
 class Order(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    address = AddressField(on_delete=models.CASCADE)  # default for null & blank is false
+    address = AddressModel()  # default for null & blank is false
     date_order = models.DateTimeField()
     date_created = models.DateTimeField(auto_now_add=True)
 

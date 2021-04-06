@@ -1,20 +1,25 @@
-from django.shortcuts import render
-from django.views.generic import CreateView, ListView, UpdateView, DetailView, DeleteView
+from django.views.generic import FormView, ListView
+from django.contrib.auth.views import LoginView
 from .models import Booking
 from django.urls import reverse
+
 
 # Create your views here.
 
 
-class BookingView(CreateView):
-    template_name = "main.html"
-    model = Booking
+class Login(LoginView):
+    template_name = "login.html"
     fields = "__all__"
-    context_object_name = "booking"
-    success_url = "/"
+    redirect_authenticated_user = True
+
+    def get_success_url(self):
+        return reverse('home')
 
 
-class BookingListView(ListView):
-    template_name = "list.html"
+class Register(FormView):
+    template_name = "register.html"
+
+
+class Home(ListView):
     model = Booking
-    context_object_name = "bookings"
+    template_name = "home.html"
