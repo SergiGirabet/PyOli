@@ -1,17 +1,18 @@
-version: "0.1"
+version: "3.3"
 services:
   db:
     image: postgres:latest
+    restart: on-failure
     environment:
-      - POSTGRES_DB: pyoli
-      - POSTGRES_USER: pyoli
-      - POSTGRES_PASSWORD: pyoli
+      - POSTGRES_DB=pyoli
+      - POSTGRES_USER=pyoli
+      - POSTGRES_PASSWORD=pyoli
   app:
     build: .
-    command: cd /code && python3 manage.py runserver 0.0.0.0:8000
+    command: bash -c "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
     volumes:
-    - .:/code
+      - .:/code
     ports:
-    - "8000:8000"
+      - "8000:8000"
     depends_on:
       - db

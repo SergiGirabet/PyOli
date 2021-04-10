@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
-import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -78,8 +77,12 @@ GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'pyoli',
+        'USER': 'pyoli',
+        'PASSWORD': 'pyoli',
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
 
@@ -122,5 +125,3 @@ STATIC_ROOT = BASE_DIR / "static"
 
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
-
-django_heroku.settings(locals())
