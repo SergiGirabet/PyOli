@@ -24,7 +24,7 @@ docker-compose up -d
 ## Other
 
 Google Maps API:
-- We plan to use GOOGLE MAPS API in the field 'address' of the Order class.
+- We plan to use GOOGLE MAPS API for the class 'Address'.
     - Note that: A key is personal and private, each member needs to have their own secret key. Such keys can be hidden from the
       code in several ways, we have decided that in order to everyone has the same environment we will all have the API
       key stored as an environment variable in our system. So, you must define an environment variable in your system with the name GOOGLE_API_KEY to get it to work.
