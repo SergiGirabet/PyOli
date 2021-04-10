@@ -6,7 +6,7 @@ Booking and order manager for the restaurant **Pa i oli**.
 - Restaurant administrators can add food to deliver, tables in the restaraunt and manage pending orders and table
   bookings.
   
-## Run
+## Run locally
 ```bash
 python3 manage.py runserver
 ```
@@ -15,6 +15,12 @@ Admin test user:
 - user: alex
 - pass: alex
 
+## Docker run
+If you want to run with docker compose, switch to branch [deliver1-docker](https://github.com/SergiGirabet/PyOli/tree/deliver1-docker)
+and execute:
+```bash
+docker-compose up -d
+```
 ## Other
 
 Google Maps API:
