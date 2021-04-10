@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 class Address(models.Model):
     address_field = models.CharField(max_length=150)
 
+    class Meta:
+        verbose_name_plural = 'addresses'
+
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
