@@ -8,9 +8,8 @@ Booking and order manager for the restaurant **Pa i oli**.
   
 ## Run locally
 ```bash
-python3 manage.py runserver
+docker-compose up -d
 ```
-
 Admin test user:
 - user: alex
 - pass: alex
@@ -21,6 +20,7 @@ and execute:
 ```bash
 docker-compose up -d
 ```
+
 ## Other
 
 Google Maps API:
