@@ -11,7 +11,7 @@ class Address(models.Model):
 
 class Order(models.Model):
     order_user = models.ForeignKey(User, on_delete=models.CASCADE)
-    deliver_address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    deliver_address = models.ForeignKey('Address', on_delete=models.CASCADE)
     date_order = models.DateTimeField()
     date_created = models.DateTimeField(auto_now_add=True)
 
