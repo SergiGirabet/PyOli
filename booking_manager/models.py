@@ -2,24 +2,18 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class Client(models.Model):
-    user = models.OneToOneField(User, related_name='user_id', on_delete=models.CASCADE)
-    phone_number = models.DecimalField(decimal_places=0, max_digits=9, blank=True, null=True)
-
-    def __str__(self):
-        return f"{type(self).__name__}(id={self.id}, username={self.user.username})"
-
 class Address(models.Model):
     address_field = models.CharField(max_length=150)
 
+
 class Order(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     date_order = models.DateTimeField()
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{type(self).__name__}(id={self.id}, client={self.client})"
+        return f"{type(self).__name__}(id={self.id}, user={self.user})"
 
 
 class Table(models.Model):
@@ -31,7 +25,7 @@ class Table(models.Model):
 
 
 class Booking(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     table = models.ForeignKey(Table, on_delete=models.CASCADE)
     date = models.DateTimeField()
 
