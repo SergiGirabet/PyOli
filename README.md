@@ -7,8 +7,6 @@ Booking and order manager for the restaurant **Pa i oli**.
   bookings.
 
 ## Docker run
-If you want to run with docker compose, switch to branch [deliver1-docker](https://github.com/SergiGirabet/PyOli/tree/deliver1-docker)
-and execute:
 ```bash
 docker-compose up -d
 ```
