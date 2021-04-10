@@ -9,10 +9,12 @@ class Client(models.Model):
     def __str__(self):
         return f"{type(self).__name__}(id={self.id}, username={self.user.username})"
 
+class Address(models.Model):
+    address_field = models.CharField(max_length=150)
 
 class Order(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    address = models.CharField(max_length=150)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
     date_order = models.DateTimeField()
     date_created = models.DateTimeField(auto_now_add=True)
 
