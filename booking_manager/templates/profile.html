@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="pb-4">
+        <h2>Hello, <i><u>{{ request.user.username }}</u></i></h2>
+    </div>
+
+    <div id="addresses" class="pb-3">
+        <h3>Addresses</h3>
+        <div class="card col-6">
+            <ul class="list-group list-group-flush">
+                {% for address in addresses %}
+                    <li class="list-group-item">{{ address.user_address }}</li>
+                {% empty %}
+                    <li class="list-group-item"><i>No addresses. TODO: add one</i></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div id="orders" class="pb-3">
+        <h3>Delivery</h3>
+        <div class="card col-6">
+            <ul class="list-group list-group-flush">
+                {% for order in orders %}
+                    <li class="list-group-item">{{ order }}</li>
+                {% empty %}
+                    <li class="list-group-item"><i>No orders found. Place an order <a
+                            href="{% url 'delivery' %}">here</a></i></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div id="bookings" class="pb-3">
+        <h3>Bookings</h3>
+        <div class="card col-6">
+            <ul class="list-group list-group-flush">
+                {% for booking in bookings %}
+                    <li class="list-group-item">{{ booking }}</li>
+                {% empty %}
+                    <li class="list-group-item"><i>No bookings found. Book a table <a
+                            href="{% url 'booking' %}">here</a></i></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}
