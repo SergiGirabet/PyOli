@@ -68,5 +68,5 @@ class Backoffice(TemplateView):
 
 class BookingView(CreateView):
     # Select number of people, day and hour
-    # if there's a table with capacity <= num_people -> Create the booking and assign the table.
+    # if there's a table with capacity >= num_people -> Create the booking and assign the table.
     pass

@@ -20,6 +20,7 @@ class UserAddress(models.Model):
     class Meta:
         verbose_name_plural = "User Addresses"
 
+
 class Category(models.Model):
     name = models.CharField(max_length=50)
 
