@@ -22,6 +22,11 @@ docker-compose run app python3 manage.py makemigrations booking_manager
 docker-compose run app python3 manage.py migrate booking_manager
 ```
 
+If it doesn't work the migration, you can try the following entry
+```bash
+docker-compose run app python3 manage.py migrate --run-syncdb
+```
+
 ## Other
 
 Google Maps API:
