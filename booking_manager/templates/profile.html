@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
     <div class="pb-4">
-        <h2>Hello, <i><u>{{ request.user.username }}</u></i></h2>
+        <h2>Hello <i><u>{{ request.user.username }}</u></i></h2>
     </div>
 
     <div id="addresses" class="pb-3">
-        <h3>Addresses</h3>
+        <h3>Your user addresses</h3>
         <div class="card col-6">
             <ul class="list-group list-group-flush">
                 {% for address in addresses %}
@@ -18,7 +18,7 @@
     </div>
 
     <div id="orders" class="pb-3">
-        <h3>Delivery</h3>
+        <h3>Your deliveries</h3>
         <div class="card col-6">
             <ul class="list-group list-group-flush">
                 {% for order in orders %}
@@ -32,7 +32,7 @@
     </div>
 
     <div id="bookings" class="pb-3">
-        <h3>Bookings</h3>
+        <h3>Your bookings</h3>
         <div class="card col-6">
             <ul class="list-group list-group-flush">
                 {% for booking in bookings %}
