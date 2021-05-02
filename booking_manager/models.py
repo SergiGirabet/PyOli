@@ -39,6 +39,9 @@ class Product(models.Model):
     stock = models.IntegerField()
     modifiable = models.BooleanField()
 
+    class Meta:
+        ordering = ["product_category"]
+
     def __str__(self):
         return self.name
 

@@ -2,26 +2,33 @@
 {% block content %}
     <div class="row p-3">
         <form method="POST">
-        {% csrf_token %}
-            {% for product in products %}
-                <div class="pb-3">
-                    <div class="card col" style="border: 1px solid black">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col">
-                                    <h5 class="card-title">{{ product.name }}</h5>
-                                    <p class="card-text">{{ product.description|truncatechars:80 }}</p>
-                                </div>
-                                <div class="col text-end">
-                                    <div class="row">
-                                        <div class="col"><label for="{{ product.id }}"><a>Quantity: </a></label></div>
-                                        <div class="col"><input type="number" id="{{ product.id }}" value="0"></div>
+            {{ form }}
+            {% csrf_token %}
+            {% regroup products by product_category as products_by_category %}
+            {% for product_group in products_by_category %}
+                <h1>{{ product_group.grouper }}</h1>
+                {% for product in product_group.list %}
+                    <div class="pb-3">
+                        <div class="card col" style="border: 1px solid black">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title">{{ product.name }}</h5>
+                                        <p class="card-text">{{ product.description|truncatechars:80 }}</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="{{ product.id }}"><a>Quantity: </a></label>
+                                            </div>
+                                            <div class="col"><input type="number" id="{{ product.id }}" name="{{ product.id }}" value="0" min="0"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                {% endfor %}
             {% endfor %}
             <input class="button" type="submit" value="Order now">
         </form>

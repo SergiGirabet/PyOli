@@ -1,10 +1,11 @@
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils import timezone
 from django.views.generic import FormView, TemplateView, CreateView, ListView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
-from booking_manager.models import Order, Booking, UserAddress, Product
+from booking_manager.models import Order, Booking, UserAddress, Product, ProductOrder
 
 
 class Login(LoginView):
@@ -44,7 +45,7 @@ class ProfileView(TemplateView, LoginRequiredMixin):
         return context
 
 
-class DeliveryView(ListView):
+class DeliveryView(TemplateView):
     # Show all the products grouped by category
     # Input field for the quantity
     # When user clicks submit button -> check if there's stock
@@ -52,8 +53,25 @@ class DeliveryView(ListView):
     # TODO: Here we have to save the estimated hour (now + estimated) from google maps api (maybe a field in the model and substract it in the template??)
     # TODO: add a status field (Preparing, delivering, completed)
     template_name = "delivery.html"
-    model = Product
-    context_object_name = "products"
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        context["products"] = Product.objects.all()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        querydict: dict = request.POST.dict()
+        querydict.pop("csrfmiddlewaretoken")
+        address = querydict.pop("address")
+        # TODO: address as input of form
+        order = Order.objects.create(deliver_address_id=address, order_user=request.user, date_order=timezone.now())
+        for product_id, quantity in querydict.items():
+            if quantity > 0:
+                product_order = ProductOrder.objects.create(ordered_product_id=product_id, quantity=quantity)
+                product_order.save()
+                order.products_ordered.add(product_order)
+        order.save()
+        return self.get(request, *args, **kwargs)
 
 
 class Backoffice(TemplateView):

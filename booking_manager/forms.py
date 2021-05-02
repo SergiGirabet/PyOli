@@ -3,7 +3,7 @@ from django import forms
 from booking_manager.models import ProductOrder
 
 
-class ProductForm(forms.ModelForm):
+class DeliveryForm(forms.ModelForm):
 
     class Meta:
         model = ProductOrder
