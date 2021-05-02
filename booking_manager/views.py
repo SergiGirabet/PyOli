@@ -63,7 +63,13 @@ class Backoffice(TemplateView):
     # Show current bookings (for today)
     # Manage orders, bookings and products ??? We can do it with admin interface
     # TODO: orders by state ?? And show a counter of the orders by state.
-    pass
+    template_name = "backoffice.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["orders"] = Order.objects.filter(order_user=self.request.user)
+        context["bookings"] = Booking.objects.filter(booking_user=self.request.user)
+        return context
 
 
 class BookingView(CreateView):
