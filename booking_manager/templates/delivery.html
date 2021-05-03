@@ -21,7 +21,11 @@
                                             <div class="col">
                                                 <label for="{{ product.id }}"><a>Quantity: </a></label>
                                             </div>
-                                            <div class="col"><input type="number" id="{{ product.id }}" name="{{ product.id }}" value="0" min="0"></div>
+                                            <div class="col">
+                                                <input type="number" id="{{ product.id }}"
+                                                       name="{{ product.id }}" value="0" min="0"
+                                                       max="{{ product.stock }}">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -30,7 +34,25 @@
                     </div>
                 {% endfor %}
             {% endfor %}
-            <input class="button" type="submit" value="Order now">
+            <div class="row">
+                <div class="col">
+                    <label for="address"><b>Delivery address:&nbsp;</b></label>
+                    {% if addresses %}
+                        <select name="address" id="address">
+                            {% for address in addresses %}
+                                <option value="{{ address.id }}"> {{ address }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <i>No addresses found. Add one in your <a href="{% url 'profile' %}">profile</a></i>
+                    {% endif %}
+                </div>
+                <div class="col">
+                    <input class="button" type="submit" value="Order now">
+                </div>
+            </div>
+
+
         </form>
     </div>
 {% endblock %}

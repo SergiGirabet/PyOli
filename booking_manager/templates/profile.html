@@ -9,7 +9,7 @@
         <div class="card col-6">
             <ul class="list-group list-group-flush">
                 {% for address in addresses %}
-                    <li class="list-group-item">{{ address.user_address }}</li>
+                    <li class="list-group-item">{{ address.address_field }}</li>
                 {% empty %}
                     <li class="list-group-item"><i>No addresses. TODO: add one</i></li>
                 {% endfor %}

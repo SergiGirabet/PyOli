@@ -70,8 +70,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'pyoli.wsgi.application'
 
-GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -106,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Madrid'
 
 USE_I18N = True
 

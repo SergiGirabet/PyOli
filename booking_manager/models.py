@@ -5,20 +5,13 @@ from django.contrib.auth.models import User
 
 class Address(models.Model):
     address_field = models.CharField(max_length=150)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.address_field
 
     class Meta:
         verbose_name_plural = 'addresses'
-
-
-class UserAddress(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    user_address = models.ForeignKey(Address, on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name_plural = "User Addresses"
 
 
 class Category(models.Model):
@@ -46,23 +39,34 @@ class Product(models.Model):
         return self.name
 
 
-class ProductOrder(models.Model):
-    ordered_product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
-
-    def __str__(self):
-        return f"{type(self).__name__}(product={self.ordered_product}, quantity={self.quantity})"
-
-
 class Order(models.Model):
+    ORDER = "ORDER"
+    PREPARING = "PREPARING"
+    DELIVERING = "DELIVERING"
+    COMPLETED = "COMPLETED"
+    STATUS_CHOICES = (
+        (ORDER, "Order done"),
+        (PREPARING, "Preparing"),
+        (DELIVERING, "Delivering"),
+        (COMPLETED, "Completed"))
     order_user = models.ForeignKey(User, on_delete=models.CASCADE)
     deliver_address = models.ForeignKey('Address', on_delete=models.CASCADE)
     date_order = models.DateTimeField()
     date_created = models.DateTimeField(auto_now_add=True)
-    products_ordered = models.ManyToManyField(ProductOrder)
+    expected_delivery_date = models.DateTimeField()
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default=ORDER)
 
     def __str__(self):
         return f"{type(self).__name__}(id={self.id}, user={self.order_user})"
+
+
+class ProductOrder(models.Model):
+    ordered_product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+
+    def __str__(self):
+        return f"{type(self).__name__}(product={self.ordered_product}, quantity={self.quantity})"
 
 
 class Table(models.Model):

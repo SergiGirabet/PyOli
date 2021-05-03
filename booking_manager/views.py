@@ -1,11 +1,18 @@
+import os
+from datetime import datetime
+
+import googlemaps
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
 from django.utils import timezone
+from django.utils.timezone import make_aware
 from django.views.generic import FormView, TemplateView, CreateView, ListView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
-from booking_manager.models import Order, Booking, UserAddress, Product, ProductOrder
+from booking_manager.models import Order, Booking, Product, ProductOrder, Address
+from pyoli import settings
 
 
 class Login(LoginView):
@@ -41,37 +48,46 @@ class ProfileView(TemplateView, LoginRequiredMixin):
         context = super().get_context_data(**kwargs)
         context["orders"] = Order.objects.filter(order_user=self.request.user)
         context["bookings"] = Booking.objects.filter(booking_user=self.request.user)
-        context["addresses"] = UserAddress.objects.filter(user_id=self.request.user)
+        context["addresses"] = Address.objects.filter(user_id=self.request.user)
         return context
 
 
-class DeliveryView(TemplateView):
-    # Show all the products grouped by category
-    # Input field for the quantity
-    # When user clicks submit button -> check if there's stock
-    # If all ok: create the Order after creating all the ProductOrder objects
-    # TODO: Here we have to save the estimated hour (now + estimated) from google maps api (maybe a field in the model and substract it in the template??)
-    # TODO: add a status field (Preparing, delivering, completed)
+class DeliveryView(LoginRequiredMixin, TemplateView):
     template_name = "delivery.html"
 
     def get_context_data(self, **kwargs):
         context = {}
         context["products"] = Product.objects.all()
+        context["addresses"] = Address.objects.filter(user_id=self.request.user)
         return context
 
     def post(self, request, *args, **kwargs):
         querydict: dict = request.POST.dict()
         querydict.pop("csrfmiddlewaretoken")
         address = querydict.pop("address")
-        # TODO: address as input of form
-        order = Order.objects.create(deliver_address_id=address, order_user=request.user, date_order=timezone.now())
+        order = Order.objects.create(deliver_address_id=address, order_user=request.user, date_order=timezone.now(),
+                                     expected_delivery_date=timezone.now())
         for product_id, quantity in querydict.items():
-            if quantity > 0:
-                product_order = ProductOrder.objects.create(ordered_product_id=product_id, quantity=quantity)
+            quantity = int(quantity)
+            product = Product.objects.get(pk=product_id)
+            if 0 < quantity <= product.stock:
+                product.stock -= quantity
+                product_order = ProductOrder.objects.create(ordered_product_id=product_id, quantity=quantity,
+                                                            order=order)
                 product_order.save()
-                order.products_ordered.add(product_order)
+                product.save()
+
+        client = googlemaps.Client(key=os.environ.get("API_KEY"))
+        user_address = Address.objects.get(pk=address, user=request.user)
+        # restaurant address
+        response = client.distance_matrix("Carrer de Jaume II, 69, 25001 Lleida", user_address.address_field)
+        distance_seconds = response["rows"][0]["elements"][0]["duration"]["value"]
+        average_preparing_time = 20 * 60  # 20 minutes in seconds
+        expected_date = datetime.fromtimestamp(timezone.now().timestamp() +
+                                               distance_seconds + average_preparing_time)
+        order.expected_delivery_date = make_aware(expected_date)
         order.save()
-        return self.get(request, *args, **kwargs)
+        return redirect('profile')
 
 
 class Backoffice(TemplateView):
