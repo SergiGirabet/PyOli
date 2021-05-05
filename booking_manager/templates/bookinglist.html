@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <a class="btn btn-primary" href="{% url 'book' %}" >Book a table</a>
+
+    <table id="bookings" class="display compact" style="width:100%">
+        <tbody>
+            {% if object_list %}
+            <thead>
+                <tr>
+                    <th>Date and hour</th>
+                    <th>People number</th>
+                </tr>
+            </thead>
+            {% for booking in object_list %}
+            <tr>
+                <td>{{ booking.date }}</td>
+                <td>{{ booking.people_number }}</td>
+                <td>
+                    <a class="btn btn-primary" href="{% url 'book' %}" >Edit</a>
+                    <a class="btn btn-primary" href="{% url 'deletebooking' pk=booking.id %}" >Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <h3>You have no bookings</h3>>
+            {% endif %}
+        </tbody>
+    </table>
+{% endblock %}

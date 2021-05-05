@@ -63,7 +63,6 @@ class Order(models.Model):
 
 
 class Table(models.Model):
-    reserve = models.BooleanField()
     capacity = models.IntegerField()
 
     def __str__(self):
@@ -74,7 +73,6 @@ class Booking(models.Model):
     booking_user = models.ForeignKey(User, on_delete=models.CASCADE)
     reserved_table = models.ForeignKey(Table, on_delete=models.CASCADE)
     date = models.DateTimeField()
-
     people_number = models.IntegerField()
 
     def __str__(self):
