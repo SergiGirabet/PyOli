@@ -17,56 +17,68 @@ que surtin separts en funció de l'hora
     <h2>Orders center</h2>
     <h1>_________</h1>
     <div id="orders" class="pb-3">
-        <h3>Pending orders</h3>
+        <h3>Pending orders: {{ n_pending }}</h3>
         <div id="orders" class="pb-3">
             <div class="card col-6">
                 <ul class="list-group list-group-flush">
-                    {% for order in orders %}
-                        <li class="list-group-item">{{ order }}</li>
+                    {% for pending_order in pending %}
+                        <li class="list-group-item">{{ pending_order }}</li>
                     {% empty %}
                         <li class="list-group-item"><i>No orders found. Place an order <a
                                 href="{% url 'delivery' %}">here</a></i></li>
                     {% endfor %}
                 </ul>
             </div>
-            <h3>Delivered orders</h3>
+            <h3>Preparing orders: {{ n_preparing }}</h3>
+            <div id="orders" class="pb-3">
+                <div class="card col-6">
+                    <ul class="list-group list-group-flush">
+                        {% for preparing_order in preparing %}
+                            <li class="list-group-item">{{ preparing_order }}</li>
+                        {% empty %}
+                            <li class="list-group-item"><i>No orders found. Place an order <a
+                                    href="{% url 'delivery' %}">here</a></i></li>
+                        {% endfor %}
+                    </ul
+                </div>
+                <h3>Delivering orders: {{ n_delivering }}</h3>
+                <div class="card col-6">
+                    <ul class="list-group list-group-flush">
+                        {% for delivering_order in delivering %}
+                            <li class="list-group-item">{{ delivering_order }}</li>
+                        {% empty %}
+                            <li class="list-group-item"><i>No orders found. Place an order <a
+                                    href="{% url 'delivery' %}">here</a></i></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <h1>___</h1>
+        <h2>Booking center</h2>
+        <h1>_________</h1>
+        <div id="bookings" class="pb-3">
+            <h3>Pending bookings</h3>
             <div class="card col-6">
                 <ul class="list-group list-group-flush">
-                    {% for order in orders %}
-                        <li class="list-group-item">{{ order }}</li>
+                    {% for booking in bookings %}
+                        <li class="list-group-item">{{ booking }}</li>
                     {% empty %}
-                        <li class="list-group-item"><i>No orders found. Place an order <a
-                                href="{% url 'delivery' %}">here</a></i></li>
+                        <li class="list-group-item"><i>No bookings found. Book a table <a
+                                href="{% url 'booking' %}">here</a></i></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <h3>Delivered bookings</h3>
+            <div class="card col-6">
+                <ul class="list-group list-group-flush">
+                    {% for booking in bookings %}
+                        <li class="list-group-item">{{ booking }}</li>
+                    {% empty %}
+                        <li class="list-group-item"><i>No bookings found. Book a table <a
+                                href="{% url 'booking' %}">here</a></i></li>
                     {% endfor %}
                 </ul>
             </div>
         </div>
-    </div>
-    <h1>___</h1>
-    <h2>Booking center</h2>
-    <h1>_________</h1>
-    <div id="bookings" class="pb-3">
-        <h3>Pending bookings</h3>
-        <div class="card col-6">
-            <ul class="list-group list-group-flush">
-                {% for booking in bookings %}
-                    <li class="list-group-item">{{ booking }}</li>
-                {% empty %}
-                    <li class="list-group-item"><i>No bookings found. Book a table <a
-                            href="{% url 'booking' %}">here</a></i></li>
-                {% endfor %}
-            </ul>
-        </div>
-        <h3>Delivered bookings</h3>
-        <div class="card col-6">
-            <ul class="list-group list-group-flush">
-                {% for booking in bookings %}
-                    <li class="list-group-item">{{ booking }}</li>
-                {% empty %}
-                    <li class="list-group-item"><i>No bookings found. Book a table <a
-                            href="{% url 'booking' %}">here</a></i></li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
 {% endblock %}
