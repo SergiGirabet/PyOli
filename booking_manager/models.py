@@ -52,14 +52,21 @@ class ProductOrder(models.Model):
 
 
 class Order(models.Model):
+    ORDER = "ORDER"
+    PREPARING = "PREPARING"
+    DELIVERING = "DELIVERING"
+    COMPLETED = "COMPLETED"
+    STATUS_CHOICES = (
+        (ORDER, "Order done"),
+        (PREPARING, "Preparing"),
+        (DELIVERING, "Delivering"),
+        (COMPLETED, "Completed"))
     order_user = models.ForeignKey(User, on_delete=models.CASCADE)
     deliver_address = models.ForeignKey('Address', on_delete=models.CASCADE)
     date_order = models.DateTimeField()
     date_created = models.DateTimeField(auto_now_add=True)
-    products_ordered = models.ManyToManyField(ProductOrder)
-
-    def __str__(self):
-        return f"{type(self).__name__}(id={self.id}, user={self.order_user})"
+    expected_delivery_date = models.DateTimeField()
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default=ORDER)
 
 
 class Table(models.Model):

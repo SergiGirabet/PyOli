@@ -5,6 +5,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from booking_manager.models import Order, Booking, UserAddress, Product
+import operator
 
 
 class Login(LoginView):
@@ -65,12 +66,22 @@ class Backoffice(TemplateView):
     # TODO: orders by state ?? And show a counter of the orders by state.
     template_name = "backoffice.html"
 
+    # han de sortir tots els Orders, treure el filtre i trobar la manera de comptar-les
+    # agafar conte
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["orders"] = Order.objects.filter(order_user=self.request.user)
+        # buscar com funciona i com treballen els dictionary of python
+        #context["n_orders"] = amb la longitud
+        # es el del for, el filter ens retorna una llista de orders del usuari
         context["bookings"] = Booking.objects.filter(booking_user=self.request.user)
+        # ordenar
         return context
 
+    # comptar amb count o algo el nombre de ordres preparing, completed, etc.
+    # tenir-les ordenades d'alguna mena
+
+    # els bookings tenir-los ordenats
 
 class BookingView(CreateView):
     # Select number of people, day and hour
