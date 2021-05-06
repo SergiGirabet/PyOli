@@ -1,15 +1,15 @@
 {% extends "base.html" %}
+
 {% block content %}
     <div class="pb-4">
         <h2>Hello <i><u>{{ request.user.username }}</u></i></h2>
     </div>
-
     <div id="addresses" class="pb-3">
         <h3>Your user addresses</h3>
         <div class="card col-6">
             <ul class="list-group list-group-flush">
                 {% for address in addresses %}
-                    <li class="list-group-item">
+                    <li class="list-group-item" id="address-{{ address.id }}">
                         <div class="row">
                             <div class="col-9">
                                 {{ address.address_field | truncatechars:45 }}
@@ -22,10 +22,10 @@
                                             <i class="fas fa-pencil-alt"></i></a>
                                     </div>
                                     <div class="col py-2">
-                                        <a class="btn btn-outline-danger"
-                                           href="{% url 'delete_address' pk=address.id %}">
+                                        <button class="btn btn-outline-danger"
+                                                onclick="deleteAddress({{ address.id }}, {{ csrfmiddlewaretoken }})">
                                             <i class="fas fa-trash-alt"></i>
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -36,8 +36,6 @@
                 {% endfor %}
                 <a class="btn btn-outline-dark" style="font-size: 18px"
                    href="{% url 'create_address' %}"> Add an address &nbsp;<i class="fas fa-plus"></i></a>
-
-
             </ul>
         </div>
     </div>

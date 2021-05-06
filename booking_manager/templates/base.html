@@ -5,6 +5,12 @@
     <title>PyOli</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+            integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
+            integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
+            crossorigin="anonymous"></script>
     <style>
         body {
             background-color: #FAFAFA !important;
@@ -69,6 +75,42 @@
     {% endblock %}
 </div>
 </body>
+<script>
+    function removeElement(elementId) {
+        var object = document.getElementById(elementId);
+        object.remove();
+    }
+    function sendRequest(url, method, data) {
+        const req = axios({
+            method: method,
+            url: url,
+            data: data,
+            xsrfCookieName: 'csrftoken',
+            xsrfHeaderName: 'X-CSRFToken',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+        return req
+    }
+
+    function deleteAddress(addressId, csrf) {
+        swal({
+            title: "Are you sure?",
+            text: "Are you sure that you want to delete this address?",
+            icon: "warning",
+            dangerMode: true,
+        })
+            .then(willDelete => {
+                if (willDelete) {
+                    const r = sendRequest("/delete-address/" + addressId, 'post', {'csrfmiddlewaretoken': csrf})
+                    removeElement('address-'+addressId)
+                    swal("Deleted!", "Your address has been deleted!", "success");
+                }
+            });
+    }
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"
         integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG"
         crossorigin="anonymous"></script>
