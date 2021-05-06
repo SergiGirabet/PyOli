@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.timezone import make_aware
-from django.views.generic import FormView, TemplateView, CreateView, ListView
+from django.views.generic import FormView, TemplateView, CreateView, ListView, DeleteView, UpdateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
@@ -54,31 +54,65 @@ class ProfileView(TemplateView, LoginRequiredMixin):
         return context
 
 
-class AddressCreate(FormView):
-    form_class = AddressForm
+class AddressCreate(CreateView):
+    model = Address
+    fields = ['address_field']
     template_name = 'createaddress.html'
     success_url = reverse_lazy('profile')
 
     def form_valid(self, form):
-        address = Address(user=self.request.user, address_field=form.cleaned_data['address_field'])
+        address = Address.objects.create(user=self.request.user, address_field=form.cleaned_data['address_field'])
         address.save()
-        return super(AddressCreate, self).form_valid(form)
+        return redirect('profile')
 
 
-class AddressDelete(FormView):
-    form_class = AddressForm
+def verify_user(model):
+    def inner(func):
+        def wrapper(*args, **kwargs):
+            object_ = model.objects.get(pk=kwargs["pk"])
+            request = args[1]
+            if object_.user != request.user:
+                return redirect('profile')
+            return func(*args, **kwargs)
+        return wrapper
+    return inner
+
+
+class AddressDelete(DeleteView):
     model = Address
     template_name = 'deletingaddress.html'
     success_url = reverse_lazy('profile')
+
+    @verify_user(model)
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @verify_user(model)
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class AddressEdit(UpdateView):
+    model = Address
+    template_name = "editaddress.html"
+    fields = ["address_field"]
+    success_url = reverse_lazy('profile')
+
+    @verify_user(model)
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @verify_user(model)
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
 
 class DeliveryView(LoginRequiredMixin, TemplateView):
     template_name = "delivery.html"
 
     def get_context_data(self, **kwargs):
-        context = {}
-        context["products"] = Product.objects.all()
-        context["addresses"] = Address.objects.filter(user_id=self.request.user)
+        context = {"products": Product.objects.all(),
+                   "addresses": Address.objects.filter(user_id=self.request.user)}
         return context
 
     def post(self, request, *args, **kwargs):

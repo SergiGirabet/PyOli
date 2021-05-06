@@ -12,7 +12,7 @@
                         <div class="card col" style="border: 1px solid black">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col">
+                                    <div class="col-9">
                                         <h5 class="card-title">{{ product.name }}</h5>
                                         <p class="card-text">{{ product.description|truncatechars:80 }}</p>
                                     </div>
@@ -40,7 +40,7 @@
                     {% if addresses %}
                         <select name="address" id="address">
                             {% for address in addresses %}
-                                <option value="{{ address.id }}"> {{ address }}</option>
+                                <option value="{{ address.id }}"> {{ address.address_field |truncatechars:50 }}</option>
                             {% endfor %}
                         </select>
                     {% else %}
