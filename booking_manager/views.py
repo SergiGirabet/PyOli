@@ -4,6 +4,7 @@ from datetime import datetime
 import googlemaps
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.timezone import make_aware
@@ -11,6 +12,7 @@ from django.views.generic import FormView, TemplateView, CreateView, ListView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
+from booking_manager.forms import *
 from booking_manager.models import Order, Booking, Product, ProductOrder, Address
 from pyoli import settings
 
@@ -50,6 +52,24 @@ class ProfileView(TemplateView, LoginRequiredMixin):
         context["bookings"] = Booking.objects.filter(booking_user=self.request.user)
         context["addresses"] = Address.objects.filter(user_id=self.request.user)
         return context
+
+
+class AddressCreate(FormView):
+    form_class = AddressForm
+    template_name = 'createaddress.html'
+    success_url = reverse_lazy('profile')
+
+    def form_valid(self, form):
+        address = Address(user=self.request.user, address_field=form.cleaned_data['address_field'])
+        address.save()
+        return super(AddressCreate, self).form_valid(form)
+
+
+class AddressDelete(FormView):
+    form_class = AddressForm
+    model = Address
+    template_name = 'deletingaddress.html'
+    success_url = reverse_lazy('profile')
 
 
 class DeliveryView(LoginRequiredMixin, TemplateView):

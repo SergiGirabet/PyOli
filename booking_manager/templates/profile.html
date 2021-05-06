@@ -10,9 +10,16 @@
             <ul class="list-group list-group-flush">
                 {% for address in addresses %}
                     <li class="list-group-item">{{ address.address_field }}</li>
+                    <td>
+                        <a class="btn btn-primary" href="{% url 'deleteaddress' %}" >Delete</a>
+                    </td>
                 {% empty %}
                     <li class="list-group-item"><i>No addresses. TODO: add one</i></li>
                 {% endfor %}
+            <h1>
+                <a class="btn btn-primary" href="{% url 'createaddress' %}" >Add an address to your profile</a>
+
+            </h1>
             </ul>
         </div>
     </div>
