@@ -1,11 +1,17 @@
+import datetime
+from datetime import date
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import DateTimeField
 from django.views.generic import FormView, TemplateView, CreateView, ListView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
+from django.db import models
 from booking_manager.models import Order, Booking, UserAddress, Product
 from operator import attrgetter
+from django.shortcuts import render
+from django.http import HttpResponse
 
 
 class Login(LoginView):
@@ -78,15 +84,28 @@ class Backoffice(TemplateView):
         context["n_delivering"] = len(Order.objects.filter(status=Order.DELIVERING))
         context["delivering"] = Order.objects.filter(status=Order.DELIVERING).order_by('-expected_delivery_date')
 
-        # ACABAR DE FER ELS BOOOKING, MIRAR LO DE TODAY!
-        context["bookings"] = Booking.objects.filter(booking_user=self.request.user)
+        today = datetime.datetime.today()
+        context["n_bookings"] = len(Booking.objects.filter(date__year=today.year,
+                                                           date__month=today.month,
+                                                           date__day=today.day))
+        context["bookings"] = Booking.objects.filter(date__year=today.year,
+                                                     date__month=today.month,
+                                                     date__day=today.day).order_by('date')
 
         return context
+    '''
+        def index(self):
+        return render(self, "addapp/index.html")
 
-    # comptar amb count o algo el nombre de ordres preparing, completed, etc.
-    # tenir-les ordenades d'alguna mena
+    def addlogic(self):
+        status = self.POST.getlist('status[]')
+        data1 = ''
+        for data2 in status:
+            data1 = data1 + data2 + " "
 
-    # els bookings tenir-los ordenats
+        return HttpResponse("data is " + (data1))
+    '''
+
 
 
 class BookingView(CreateView):
