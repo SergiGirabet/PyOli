@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+    {% csrf_token %}
     <div class="pb-4">
         <h2>Hello <i><u>{{ request.user.username }}</u></i></h2>
     </div>
@@ -23,7 +24,7 @@
                                     </div>
                                     <div class="col py-2">
                                         <button class="btn btn-outline-danger"
-                                                onclick="deleteAddress({{ address.id }}, {{ csrfmiddlewaretoken }})">
+                                                onclick="deleteAddress({{ address.id }})">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </div>
@@ -34,8 +35,10 @@
                 {% empty %}
                     <li class="list-group-item"><i>No addresses. TODO: add one</i></li>
                 {% endfor %}
-                <a class="btn btn-outline-dark" style="font-size: 18px"
-                   href="{% url 'create_address' %}"> Add an address &nbsp;<i class="fas fa-plus"></i></a>
+                <button class="btn btn-outline-dark" style="font-size: 18px"
+                        onclick="createAddress({{ csrfmiddlewaretoken }})">
+                    Add an address &nbsp;<i class="fas fa-plus"></i>
+                </button>
             </ul>
         </div>
     </div>

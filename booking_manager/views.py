@@ -65,7 +65,6 @@ class AddressCreate(CreateView):
         address.save()
         return redirect('profile')
 
-
 def verify_user(model):
     def inner(func):
         def wrapper(*args, **kwargs):
