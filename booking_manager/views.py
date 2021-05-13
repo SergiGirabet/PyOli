@@ -93,19 +93,16 @@ class Backoffice(TemplateView):
                                                      date__day=today.day).order_by('date')
 
         return context
-    '''
-        def index(self):
-        return render(self, "addapp/index.html")
 
-    def addlogic(self):
-        status = self.POST.getlist('status[]')
-        data1 = ''
-        for data2 in status:
-            data1 = data1 + data2 + " "
-
-        return HttpResponse("data is " + (data1))
     '''
 
+    def new_status(self, **kwargs):
+        orders = Order.objects.get()
+        orders.status =
+        orders.save()
+        return redirect()
+        
+'''
 
 
 class BookingView(CreateView):

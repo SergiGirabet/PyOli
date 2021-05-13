@@ -12,6 +12,7 @@ Els orders:
 que surtin separts en funció de l'hora
 -->
 {% block content %}
+    {% csrf_token %}
     <h1>Backoffice</h1>
     <br> <br>
     <h2>Orders center</h2>
@@ -22,19 +23,22 @@ que surtin separts en funció de l'hora
             <div class="card col-6">
                 <ul class="list-group list-group-flush">
                     {% for pending_order in pending %}
-                        <form method="post" action="add/addlogic">
-                            {% csrf_token %}
-                            <br><br>
-                            <select name="status[]" multiple="true">
-                                <option value="PENDING">PENDING</option>
-                                <option value="PREPARING">PREPARING</option>
-                                <option value="DELIVERING">DELIVERING</option>
-                                <option value="COMPLETED">COMPLETED</option>
-                            </select>
-                            <input type="submit" name="btnsubmit">
+                        <li class="list-group-item">
+                            <form method="post" action="add/addlogic">
+                                <label for="status">
+                                    {{ pending_order }}
+                                </label>
+                                <br><br>
+                                <select name="status" id="status">
+                                    <option value="PENDING">PENDING</option>
+                                    <option value="PREPARING">PREPARING</option>
+                                    <option value="DELIVERING">DELIVERING</option>
+                                    <option value="COMPLETED">COMPLETED</option>
+                                </select>
+                                <input type="submit" value="Update">
+                            </form>
                             <br> <br>
-                        </form>
-                        <li class="list-group-item">{{ pending_order }}</li>
+                        </li>
                     {% empty %}
                         <li class="list-group-item"><i>No orders found.</i></li>
                     {% endfor %}
@@ -80,20 +84,5 @@ que surtin separts en funció de l'hora
                 </ul>
             </div>
         </div>
-    </div>
-    <div>
-        <form method="post" action="add/addlogic">
-            {% csrf_token %}
-            <br><br>
-            <select name="status[]" multiple="true">
-                <option value="PENDING">PENDING</option>
-                <option value="PREPARING">PREPARING</option>
-                <option value="DELIVERING">DELIVERING</option>
-                <option value="COMPLETED">COMPLETED</option>
-            </select>
-            <br> <br>
-            <input type="submit" name="btnsubmit">
-        </form>
-
     </div>
 {% endblock %}
