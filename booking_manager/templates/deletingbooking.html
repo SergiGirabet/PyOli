@@ -4,6 +4,6 @@
     {% csrf_token %}
     <h3>Do you want to delete the booking?</h3>
     <button class="btn btn-danger" type="submit">Yes, delete it</button>
-    <a class="btn btn-default" href="{% url 'bookings' %}">Cancel</a>
+    <a class="btn btn-default" href="{% url 'profile' %}">Cancel</a>
 </form>
 {% endblock %}
