@@ -1,5 +1,4 @@
 from django import forms
-from django.forms import DateTimeInput, DateInput
 
 from booking_manager.models import ProductOrder, Booking
 

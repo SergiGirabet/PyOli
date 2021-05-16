@@ -67,7 +67,7 @@
                             <div class="col-9">{{ booking }}</div>
                             <div class="col">
                                 <div class="row">
-                                    <div class="col py-2"><a class="btn btn-outline-primary" href="{% url 'book' %}">
+                                    <div class="col py-2"><a class="btn btn-outline-primary" href="{% url 'edit_booking' %}">
                                         <i class="fas fa-pencil-alt"></i>
                                 </a></div>
                                     <div class="col py-2"><a class="btn btn-outline-danger" href="{% url 'delete_booking' pk=booking.id %}"><i class="fas fa-trash-alt"></i></a></div>
@@ -78,7 +78,7 @@
                     </li>
                 {% empty %}
                     <li class="list-group-item"><i>No bookings found. Book a table <a
-                            href="{% url 'bookings' %}">here</a></i></li>
+                            href="{% url 'book' %}">here</a></i></li>
                 {% endfor %}
             </ul>
         </div>
