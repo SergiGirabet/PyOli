@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import Home, Login, Register, ProfileView, DeliveryView, Backoffice, AddressCreate, \
-    AddressDelete, AddressEdit, BookingCreate, BookingDelete
+    AddressDelete, AddressEdit, BookingCreate, BookingDelete, BookingUpdate
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -13,6 +13,7 @@ urlpatterns = [
     path('delivery/', DeliveryView.as_view(), name="delivery"),
     path('book/', BookingCreate.as_view(), name="book"),
     path('delete-booking/<int:pk>', BookingDelete.as_view(), name="delete_booking"),
+    path('edit-booking/<int:pk>', BookingUpdate.as_view(), name="edit_booking"),
     path('create-address/', AddressCreate.as_view(), name="create_address"),
     path('delete-address/<int:pk>', AddressDelete.as_view(), name="delete_address"),
     path('edit-address/<int:pk>', AddressEdit.as_view(), name="edit_address"),
