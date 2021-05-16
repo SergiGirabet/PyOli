@@ -13,8 +13,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from booking_manager.forms import *
-from booking_manager.models import Order, Booking, Product, ProductOrder, Address
-from pyoli import settings
+from booking_manager.models import Order, Booking, Product, ProductOrder, Address, Table
 
 
 class Login(LoginView):
@@ -43,7 +42,6 @@ class Home(TemplateView):
 
 
 class ProfileView(TemplateView, LoginRequiredMixin):
-    # User should be able to modify and delete an
     template_name = "profile.html"
 
     def get_context_data(self, **kwargs):
@@ -65,6 +63,7 @@ class AddressCreate(CreateView):
         address.save()
         return redirect('profile')
 
+
 def verify_user(model):
     def inner(func):
         def wrapper(*args, **kwargs):
@@ -73,7 +72,9 @@ def verify_user(model):
             if object_.user != request.user:
                 return redirect('profile')
             return func(*args, **kwargs)
+
         return wrapper
+
     return inner
 
 
@@ -154,12 +155,39 @@ class Backoffice(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["orders"] = Order.objects.filter(order_user=self.request.user)
-        context["bookings"] = Booking.objects.filter(booking_user=self.request.user)
+
+        context["pending"] = Order.objects.filter(status=Order.PENDING).order_by('-expected_delivery_date')
+        context["preparing"] = Order.objects.filter(status=Order.PREPARING).order_by('-expected_delivery_date')
+        context["delivering"] = Order.objects.filter(status=Order.DELIVERING).order_by('-expected_delivery_date')
+
+        today = datetime.today()
+        context["bookings"] = Booking.objects.filter(date__year=today.year,
+                                                     date__month=today.month,
+                                                     date__day=today.day).order_by('date')
+
         return context
 
 
-class BookingView(CreateView):
-    # Select number of people, day and hour
-    # if there's a table with capacity >= num_people -> Create the booking and assign the table.
-    pass
+class BookingCreate(FormView):
+    form_class = BookingForm
+    template_name = 'creatingbooking.html'
+    success_url = reverse_lazy('bookings')
+
+    def form_valid(self, form):
+        tables = Table.objects.filter(capacity__gte=form.cleaned_data['people_number'])
+        for table in tables:
+            bookings = Booking.objects.filter(reserved_table=table, date=form.cleaned_data['date'])
+            if not bookings:
+                book = Booking(booking_user=self.request.user, reserved_table=table,
+                               people_number=form.cleaned_data['people_number'], date=form.cleaned_data['date'])
+                book.save()
+                return super(BookingCreate, self).form_valid(form)
+
+        return HttpResponseRedirect(reverse_lazy('book'))
+
+
+class BookingDelete(DeleteView):
+    form_class = BookingForm
+    model = Booking
+    template_name = 'deletingbooking.html'
+    success_url = reverse_lazy('bookings')

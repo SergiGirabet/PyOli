@@ -39,7 +39,7 @@
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'booking' %}">Book a table</a>
+                    <a class="nav-link" href="{% url 'book' %}">Book a table</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'delivery' %}">Delivery</a>
@@ -132,27 +132,33 @@
         return c_value;
     }
 
-    function createAddress() {
+    function updateAddress(addressId) {
         var csrf = getCookie('csrftoken');
         swal({
             title: 'Enter your address',
-            content: "input",
+            content: {
+                element: 'input',
+                attributes: {
+                    value: document.getElementById("adress-field-" + addressId).innerText
+                },
+            },
             button: {
-                text: "Add",
+                text: "Update",
                 closeModal: true,
             },
-        }).then(name => {
+        }).then(newAddress => {
             let formData = new FormData();
             formData.append('csrfmiddlewaretoken', csrf);
-            formData.append('address_field', name);
-            if (name) {
-                sendRequest('/create-address/', 'post', formData)
+            formData.append('address_field', newAddress);
+            if (newAddress) {
+                sendRequest('/edit-address/' + addressId, 'post', formData)
                     .then(() => {
-                        swal("Added!", "Your address has been added!", "success");
-                        // TODO: ADD TO HTML FROM THE RESPONSE ¿?
+                        const addressField = document.getElementById("adress-field-" + addressId);
+                        addressField.innerText = newAddress.toString();
+                        swal("Updated!", "Your address has been updated!", "success");
                     })
                     .catch(() => {
-                        swal("Error while creating address", "", "error")
+                        swal("Error while updating address", "", "error")
                     });
             }
         });

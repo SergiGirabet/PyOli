@@ -40,12 +40,12 @@ class Product(models.Model):
 
 
 class Order(models.Model):
-    ORDER = "ORDER"
+    PENDING = "PENDING"
     PREPARING = "PREPARING"
     DELIVERING = "DELIVERING"
     COMPLETED = "COMPLETED"
     STATUS_CHOICES = (
-        (ORDER, "Order done"),
+        (PENDING, "Pending"),
         (PREPARING, "Preparing"),
         (DELIVERING, "Delivering"),
         (COMPLETED, "Completed"))
@@ -54,7 +54,7 @@ class Order(models.Model):
     date_order = models.DateTimeField()
     date_created = models.DateTimeField(auto_now_add=True)
     expected_delivery_date = models.DateTimeField()
-    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default=ORDER)
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default=PENDING)
 
     def __str__(self):
         return f"{type(self).__name__}(id={self.id}, user={self.order_user})"
@@ -70,7 +70,6 @@ class ProductOrder(models.Model):
 
 
 class Table(models.Model):
-    reserve = models.BooleanField()
     capacity = models.IntegerField()
 
     def __str__(self):

@@ -6,21 +6,21 @@
         <h2>Hello <i><u>{{ request.user.username }}</u></i></h2>
     </div>
     <div id="addresses" class="pb-3">
-        <h3>Your user addresses</h3>
+        <h3>Your addresses</h3>
         <div class="card col-6">
             <ul class="list-group list-group-flush">
                 {% for address in addresses %}
                     <li class="list-group-item" id="address-{{ address.id }}">
                         <div class="row">
-                            <div class="col-9">
+                            <div class="col-9" id="adress-field-{{ address.id }}">
                                 {{ address.address_field | truncatechars:45 }}
                             </div>
                             <div class="col float-right">
                                 <div class="row">
                                     <div class="col py-2">
-                                        <a class="btn btn-outline-primary"
-                                           href="{% url 'edit_address' pk=address.id %}">
-                                            <i class="fas fa-pencil-alt"></i></a>
+                                        <button class="btn btn-outline-primary"
+                                                onclick='updateAddress("{{ address.id }}")'>
+                                            <i class="fas fa-pencil-alt"></i></button>
                                     </div>
                                     <div class="col py-2">
                                         <button class="btn btn-outline-danger"
@@ -32,13 +32,11 @@
                             </div>
                         </div>
                     </li>
-                {% empty %}
-                    <li class="list-group-item"><i>No addresses. TODO: add one</i></li>
                 {% endfor %}
-                <button class="btn btn-outline-dark" style="font-size: 18px"
-                        onclick="createAddress({{ csrfmiddlewaretoken }})">
+                <a class="btn btn-outline-dark"
+                   href="{% url 'create_address' %}">
                     Add an address &nbsp;<i class="fas fa-plus"></i>
-                </button>
+                </a>
             </ul>
         </div>
     </div>
@@ -62,10 +60,23 @@
         <div class="card col-6">
             <ul class="list-group list-group-flush">
                 {% for booking in bookings %}
-                    <li class="list-group-item">{{ booking }}</li>
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-9">{{ booking }}</div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col py-2"><a class="btn btn-outline-primary" href="{% url 'book' %}">
+                                        <i class="fas fa-pencil-alt"></i>
+                                </a></div>
+                                    <div class="col py-2"><a class="btn btn-outline-danger" href="{% url 'delete_booking' pk=booking.id %}"><i class="fas fa-trash-alt"></i></a></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </li>
                 {% empty %}
                     <li class="list-group-item"><i>No bookings found. Book a table <a
-                            href="{% url 'booking' %}">here</a></i></li>
+                            href="{% url 'bookings' %}">here</a></i></li>
                 {% endfor %}
             </ul>
         </div>

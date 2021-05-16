@@ -1,8 +1,7 @@
 from django.urls import path
-from .views import Home, Login, Register, ProfileView, DeliveryView, BookingView, Backoffice, AddressCreate, \
-    AddressDelete, AddressEdit
+from .views import Home, Login, Register, ProfileView, DeliveryView, Backoffice, AddressCreate, \
+    AddressDelete, AddressEdit, BookingCreate, BookingDelete
 from django.contrib.auth.views import LogoutView
-
 
 urlpatterns = [
     path('', Home.as_view(), name="home"),
@@ -12,7 +11,8 @@ urlpatterns = [
     path('backoffice/', Backoffice.as_view(), name="backoffice"),
     path('profile/', ProfileView.as_view(), name="profile"),
     path('delivery/', DeliveryView.as_view(), name="delivery"),
-    path('booking/', BookingView.as_view(), name="booking"),
+    path('book/', BookingCreate.as_view(), name="book"),
+    path('delete-booking/<int:pk>', BookingDelete.as_view(), name="delete_booking"),
     path('create-address/', AddressCreate.as_view(), name="create_address"),
     path('delete-address/<int:pk>', AddressDelete.as_view(), name="delete_address"),
     path('edit-address/<int:pk>', AddressEdit.as_view(), name="edit_address"),

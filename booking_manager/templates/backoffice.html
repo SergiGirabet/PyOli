@@ -1,33 +1,76 @@
 {% extends "base.html" %}
 {% block content %}
+    {% csrf_token %}
+    <h1>Backoffice</h1>
+    <br> <br>
+    <h2>Orders center</h2>
+    <br> <br>
     <div id="orders" class="pb-3">
-        <h1>Backoffice</h1>
+        <h3>Pending orders: {{ pending | length }}</h3>
         <div id="orders" class="pb-3">
-            <h3>Current orders</h3>
             <div class="card col-6">
                 <ul class="list-group list-group-flush">
-                    {% for order in orders %}
-                        <li class="list-group-item">{{ order }}</li>
+                    {% for pending_order in pending %}
+                        <li class="list-group-item">
+                            <form method="post" action="add/addlogic">
+                                <label for="status">
+                                    {{ pending_order }}
+                                </label>
+                                <br><br>
+                                <select name="status" id="status">
+                                    <option value="PENDING">PENDING</option>
+                                    <option value="PREPARING">PREPARING</option>
+                                    <option value="DELIVERING">DELIVERING</option>
+                                    <option value="COMPLETED">COMPLETED</option>
+                                </select>
+                                <input type="submit" value="Update">
+                            </form>
+                            <br> <br>
+                        </li>
                     {% empty %}
-                        <li class="list-group-item"><i>No orders found. Place an order <a
-                                href="{% url 'delivery' %}">here</a></i></li>
+                        <li class="list-group-item"><i>No orders found.</i></li>
                     {% endfor %}
                 </ul>
             </div>
+            <br> <br>
+            <h3>Preparing orders: {{ preparing | length }}</h3>
+            <div id="orders" class="pb-3">
+                <div class="card col-6">
+                    <ul class="list-group list-group-flush">
+                        {% for preparing_order in preparing %}
+                            <li class="list-group-item">{{ preparing_order }}</li>
+                        {% empty %}
+                            <li class="list-group-item"><i>No orders found.</i></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <br> <br>
+                <h3>Delivering orders: {{ delivering | length }}</h3>
+                <div class="card col-6">
+                    <ul class="list-group list-group-flush">
+                        {% for delivering_order in delivering %}
+                            <li class="list-group-item">{{ delivering_order }}</li>
+                        {% empty %}
+                            <li class="list-group-item"><i>No orders found.</i></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <div id="bookings" class="pb-3">
-        <h3>Current bookings</h3>
-        <div class="card col-6">
-            <ul class="list-group list-group-flush">
-                {% for booking in bookings %}
-                    <li class="list-group-item">{{ booking }}</li>
-                {% empty %}
-                    <li class="list-group-item"><i>No bookings found. Book a table <a
-                            href="{% url 'booking' %}">here</a></i></li>
-                {% endfor %}
-            </ul>
+        <br> <br>
+        <h2>Booking center</h2>
+        <br> <br>
+        <div id="bookings" class="pb-3">
+            <h3>Today: {{ bookings | length }}</h3>
+            <div class="card col-6">
+                <ul class="list-group list-group-flush">
+                    {% for booking in bookings %}
+                        <li class="list-group-item">{{ booking }}</li>
+                    {% empty %}
+                        <li class="list-group-item"><i>No bookings found.</i></li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>
 {% endblock %}
