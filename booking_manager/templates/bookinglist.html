@@ -17,7 +17,7 @@
                 <td>{{ booking.date }}</td>
                 <td>{{ booking.people_number }}</td>
                 <td>
-                    <a class="btn btn-primary" href="{% url 'book' %}" >Edit</a>
+                    <a class="btn btn-primary" href="{% url 'editbooking' pk=booking.id %}" >Edit</a>
                     <a class="btn btn-primary" href="{% url 'deletebooking' pk=booking.id %}" >Delete</a>
                 </td>
             </tr>

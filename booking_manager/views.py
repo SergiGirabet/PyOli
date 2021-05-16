@@ -1,7 +1,7 @@
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse, HttpResponseRedirect
-from django.views.generic import FormView, TemplateView, ListView, DeleteView
+from django.http import HttpResponseRedirect
+from django.views.generic import FormView, TemplateView, ListView, DeleteView, UpdateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
@@ -82,7 +82,7 @@ class BookingCreate(FormView):
     success_url = reverse_lazy('bookings')
 
     def form_valid(self, form):
-        tables = Table.objects.filter(capacity__gte=form.cleaned_data['people_number'])
+        tables = Table.objects.filter(capacity__gte=form.cleaned_data['people_number']).order_by('capacity')
         for table in tables:
             bookings = Booking.objects.filter(reserved_table=table, date=form.cleaned_data['date'])
             if not bookings:
@@ -94,8 +94,32 @@ class BookingCreate(FormView):
 
         return HttpResponseRedirect(reverse_lazy('book'))
 
+
 class BookingDelete(DeleteView):
     form_class = BookingForm
     model = Booking
     template_name = 'deletingbooking.html'
     success_url = reverse_lazy('bookings')
+
+
+class BookingUpdate(UpdateView):
+    form_class = BookingForm
+    model = Booking
+    template_name = 'creatingbooking.html'
+    success_url = reverse_lazy('bookings')
+
+    def form_valid(self, form):
+        book = Booking.objects.get(pk=self.kwargs['pk'])
+
+        tables = Table.objects.filter(capacity__gte=form.cleaned_data['people_number']).order_by('capacity')
+        for table in tables:
+            bookings = Booking.objects.filter(reserved_table=table, date=form.cleaned_data['date'])
+            if not bookings:
+                t = table
+                book.people_number = form.cleaned_data['people_number']
+                book.date = form.cleaned_data['date']
+                book.reserved_table = t
+                return super(BookingUpdate, self).form_valid(form)
+
+        return HttpResponseRedirect(reverse_lazy('bookings'))
+
