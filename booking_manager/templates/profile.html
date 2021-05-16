@@ -32,7 +32,7 @@
                             </div>
                         </div>
                     </li>
-                    {% empty %}
+                {% empty %}
                     <li class="list-group-item"><i>No addresses found.</i></li>
                 {% endfor %}
                 <a class="btn btn-outline-dark"
@@ -67,10 +67,13 @@
                             <div class="col-9">{{ booking }}</div>
                             <div class="col">
                                 <div class="row">
-                                    <div class="col py-2"><a class="btn btn-outline-primary" href="{% url 'edit_booking' pk=booking.id %}">
+                                    <div class="col py-2"><a class="btn btn-outline-primary"
+                                                             href="{% url 'edit_booking' pk=booking.id %}">
                                         <i class="fas fa-pencil-alt"></i>
-                                </a></div>
-                                    <div class="col py-2"><a class="btn btn-outline-danger" href="{% url 'delete_booking' pk=booking.id %}"><i class="fas fa-trash-alt"></i></a></div>
+                                    </a></div>
+                                    <div class="col py-2"><a class="btn btn-outline-danger"
+                                                             href="{% url 'delete_booking' pk=booking.id %}"><i
+                                            class="fas fa-trash-alt"></i></a></div>
                                 </div>
 
                             </div>
