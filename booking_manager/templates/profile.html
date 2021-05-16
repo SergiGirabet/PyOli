@@ -32,6 +32,8 @@
                             </div>
                         </div>
                     </li>
+                    {% empty %}
+                    <li class="list-group-item"><i>No addresses found.</i></li>
                 {% endfor %}
                 <a class="btn btn-outline-dark"
                    href="{% url 'create_address' %}">
