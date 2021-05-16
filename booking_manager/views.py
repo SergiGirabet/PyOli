@@ -190,14 +190,14 @@ class BookingDelete(DeleteView):
     form_class = BookingForm
     model = Booking
     template_name = 'deletingbooking.html'
-    success_url = reverse_lazy('bookings')
+    success_url = reverse_lazy('profile')
 
 
 class BookingUpdate(UpdateView):
     form_class = BookingForm
     model = Booking
     template_name = 'creatingbooking.html'
-    success_url = reverse_lazy('bookings')
+    success_url = reverse_lazy('profile')
 
     def form_valid(self, form):
         book = Booking.objects.get(pk=self.kwargs['pk'])
@@ -212,4 +212,4 @@ class BookingUpdate(UpdateView):
                 book.reserved_table = t
                 return super(BookingUpdate, self).form_valid(form)
 
-        return HttpResponseRedirect(reverse_lazy('bookings'))
+        return HttpResponseRedirect(reverse_lazy('profile'))
