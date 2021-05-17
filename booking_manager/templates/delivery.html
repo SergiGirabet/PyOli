@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row p-3">
+        <form method="POST">
+            {{ form }}
+            {% csrf_token %}
+            {% regroup products by product_category as products_by_category %}
+            {% for product_group in products_by_category %}
+                <h1>{{ product_group.grouper }}</h1>
+                {% for product in product_group.list %}
+                    <div class="pb-3">
+                        <div class="card col" style="border: 1px solid black">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-9">
+                                        <h5 class="card-title">{{ product.name }}</h5>
+                                        <p class="card-text">{{ product.description|truncatechars:80 }}</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <div class="row">
+                                            <div class="col">
+                                                <label for="{{ product.id }}"><a>Quantity: </a></label>
+                                            </div>
+                                            <div class="col">
+                                                <input type="number" id="{{ product.id }}"
+                                                       name="{{ product.id }}" value="0" min="0"
+                                                       max="{{ product.stock }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            <div class="row">
+                <div class="col">
+                    <label for="address"><b>Delivery address:&nbsp;</b></label>
+                    {% if addresses %}
+                        <select name="address" id="address">
+                            {% for address in addresses %}
+                                <option value="{{ address.id }}"> {{ address.address_field |truncatechars:50 }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <i>No addresses found. Add one in your <a href="{% url 'profile' %}">profile</a></i>
+                    {% endif %}
+                </div>
+                <div class="col">
+                    <input class="button" type="submit" value="Order now">
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+{% endblock %}

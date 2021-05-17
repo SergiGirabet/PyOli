@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% csrf_token %}
+    <div class="pb-4">
+        <h2>Hello <i><u>{{ request.user.username }}</u></i></h2>
+    </div>
+    <div id="addresses" class="pb-3">
+        <h3>Your addresses</h3>
+        <div class="card col-6">
+            <ul class="list-group list-group-flush">
+                {% for address in addresses %}
+                    <li class="list-group-item" id="address-{{ address.id }}">
+                        <div class="row">
+                            <div class="col-9" id="adress-field-{{ address.id }}">
+                                {{ address.address_field | truncatechars:45 }}
+                            </div>
+                            <div class="col float-right">
+                                <div class="row">
+                                    <div class="col py-2">
+                                        <button class="btn btn-outline-primary"
+                                                onclick='updateAddress("{{ address.id }}")'>
+                                            <i class="fas fa-pencil-alt"></i></button>
+                                    </div>
+                                    <div class="col py-2">
+                                        <button class="btn btn-outline-danger"
+                                                onclick="deleteAddress({{ address.id }})">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item"><i>No addresses found.</i></li>
+                {% endfor %}
+                <a class="btn btn-outline-dark"
+                   href="{% url 'create_address' %}">
+                    Add an address &nbsp;<i class="fas fa-plus"></i>
+                </a>
+            </ul>
+        </div>
+    </div>
+
+    <div id="orders" class="pb-3">
+        <h3>Your deliveries</h3>
+        <div class="card col-6">
+            <ul class="list-group list-group-flush">
+                {% for order in orders %}
+                    <li class="list-group-item">{{ order }}</li>
+                {% empty %}
+                    <li class="list-group-item"><i>No orders found. Place an order <a
+                            href="{% url 'delivery' %}">here</a></i></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div id="bookings" class="pb-3">
+        <h3>Your bookings</h3>
+        <div class="card col-6">
+            <ul class="list-group list-group-flush">
+                {% for booking in bookings %}
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-9">{{ booking }}</div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col py-2"><a class="btn btn-outline-primary" href="{% url 'edit_booking' pk=booking.id %}">
+                                        <i class="fas fa-pencil-alt"></i>
+                                </a></div>
+                                    <div class="col py-2"><a class="btn btn-outline-danger" href="{% url 'delete_booking' pk=booking.id %}"><i class="fas fa-trash-alt"></i></a></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item"><i>No bookings found. Book a table <a
+                            href="{% url 'book' %}">here</a></i></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}
