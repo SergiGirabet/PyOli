@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'booking_manager',
+    'behave_django',
 ]
 
 MIDDLEWARE = [
