@@ -8,10 +8,12 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.timezone import make_aware
-from django.views.generic import FormView, TemplateView, CreateView, ListView, DeleteView, UpdateView
+from django.views.generic import FormView, TemplateView, CreateView, DeleteView, UpdateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
+from django.views.generic.edit import BaseFormView
+
 from booking_manager.forms import *
 from booking_manager.models import Order, Booking, Product, ProductOrder, Address, Table
 
@@ -152,6 +154,8 @@ class Backoffice(TemplateView):
     # Manage orders, bookings and products ??? We can do it with admin interface
     # TODO: orders by state ?? And show a counter of the orders by state.
     template_name = "backoffice.html"
+    form_class = OrderForm
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -164,8 +168,19 @@ class Backoffice(TemplateView):
         context["bookings"] = Booking.objects.filter(date__year=today.year,
                                                      date__month=today.month,
                                                      date__day=today.day).order_by('date')
-
+        context["form"] = OrderForm()
         return context
+
+
+class OrderUpdateStatus(BaseFormView):
+    form_class = OrderForm
+    success_url = reverse_lazy('backoffice')
+
+    def form_valid(self, form):
+        order = Order.objects.get(pk=self.kwargs["pk"])
+        order.status = form.cleaned_data["status"]
+        order.save()
+        return super().form_valid(form)
 
 
 class BookingCreate(FormView):

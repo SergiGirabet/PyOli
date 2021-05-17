@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-    {% csrf_token %}
     <h1>Backoffice</h1>
     <br> <br>
     <h2>Orders center</h2>
@@ -12,17 +11,16 @@
                 <ul class="list-group list-group-flush">
                     {% for pending_order in pending %}
                         <li class="list-group-item">
-                            <form method="post" action="add/addlogic">
+                            <form method="post" action="{% url 'order_update_status' pk=pending_order.id %}">
+                                {% csrf_token %}
                                 <label for="status">
-                                    {{ pending_order }}
+                                    <b>Client:</b> {{ pending_order.order_user }} &nbsp
+                                    <b>Expected delivery date:</b> {{ pending_order.expected_delivery_date }}
+                                    <br><br>
+                                    <b>Deliver address:</b> {{ pending_order.deliver_address }}
                                 </label>
                                 <br><br>
-                                <select name="status" id="status">
-                                    <option value="PENDING">PENDING</option>
-                                    <option value="PREPARING">PREPARING</option>
-                                    <option value="DELIVERING">DELIVERING</option>
-                                    <option value="COMPLETED">COMPLETED</option>
-                                </select>
+                                {{ form.as_p }}
                                 <input type="submit" value="Update">
                             </form>
                             <br> <br>
@@ -38,39 +36,70 @@
                 <div class="card col-6">
                     <ul class="list-group list-group-flush">
                         {% for preparing_order in preparing %}
-                            <li class="list-group-item">{{ preparing_order }}</li>
-                        {% empty %}
-                            <li class="list-group-item"><i>No orders found.</i></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <br> <br>
-                <h3>Delivering orders: {{ delivering | length }}</h3>
-                <div class="card col-6">
-                    <ul class="list-group list-group-flush">
-                        {% for delivering_order in delivering %}
-                            <li class="list-group-item">{{ delivering_order }}</li>
-                        {% empty %}
+                            <li class="list-group-item">
+                                <form method="post" action="{% url 'order_update_status' pk=preparing_order.id %}">
+                                    {% csrf_token %}
+                                    <label for="status">
+                                        <b>Client:</b> {{ preparing_order.order_user }} &nbsp
+                                        <b>Expected delivery date:</b> {{ preparing_order.expected_delivery_date }}
+                                        <br><br>
+                                        <b>Deliver address:</b> {{ preparing_order.deliver_address }}
+                                    </label>
+                                    <br><br>
+                                    {{ form.as_p }}
+                                    <input type="submit" value="Update">
+                                </form>
+                                <br> <br>
+                            </li>                        {% empty %}
                             <li class="list-group-item"><i>No orders found.</i></li>
                         {% endfor %}
                     </ul>
                 </div>
             </div>
-        </div>
-        <br> <br>
-        <h2>Booking center</h2>
-        <br> <br>
-        <div id="bookings" class="pb-3">
-            <h3>Today: {{ bookings | length }}</h3>
+            <br> <br>
+            <h3>Delivering orders: {{ delivering | length }}</h3>
             <div class="card col-6">
                 <ul class="list-group list-group-flush">
-                    {% for booking in bookings %}
-                        <li class="list-group-item">{{ booking }}</li>
-                    {% empty %}
-                        <li class="list-group-item"><i>No bookings found.</i></li>
+                    {% for delivering_order in delivering %}
+                        <li class="list-group-item">
+                            <form method="post" action="{% url 'order_update_status' pk=delivering_order.id %}">
+                                {% csrf_token %}
+                                <label for="status">
+                                    <b>Client:</b> {{ delivering_order.order_user }} &nbsp
+                                    <b>Expected delivery date:</b> {{ delivering_order.expected_delivery_date }}
+                                    <br><br>
+                                    <b>Deliver address:</b> {{ delivering_order.deliver_address }}
+                                </label>
+                                <br><br>
+                                {{ form.as_p }}
+                                <input type="submit" value="Update">
+                            </form>
+                            <br> <br>
+                        </li>                    {% empty %}
+                        <li class="list-group-item"><i>No orders found.</i></li>
                     {% endfor %}
                 </ul>
             </div>
         </div>
+    </div>
+    <br> <br>
+    <h2>Booking center</h2>
+    <br> <br>
+    <div id="bookings" class="pb-3">
+        <h3>Today: {{ bookings | length }}</h3>
+        <div class="card col-6">
+            <ul class="list-group list-group-flush">
+                {% for booking in bookings %}
+                    <li class="list-group-item">
+                        <b>Client:</b> {{ booking.booking_user }} &nbsp;&nbsp;&nbsp;&nbsp;
+                        <b>Reserved table:</b> {{ booking.reserved_table }} &nbsp;&nbsp;&nbsp;&nbsp;
+                        <b>Date:</b> {{ booking.date.time }}
+                    </li>
+                {% empty %}
+                    <li class="list-group-item"><i>No bookings found.</i></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
     </div>
 {% endblock %}
