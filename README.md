@@ -14,7 +14,11 @@ python3 manage.py runserver
 Admin test user:
 - user: alex
 - pass: alex
-
+## Features
+To run all features execute:
+````bash
+python3 manage.py behave    
+````
 ## Docker run
 If you want to run with docker compose, switch to branch [deliver1-docker](https://github.com/SergiGirabet/PyOli/tree/deliver1-docker)
 and execute:

@@ -1,9 +1,9 @@
 Feature: Add Booking
   In order to book a table
   As a user
-  I want to add an book
+  I want to add a book
 
-  Background: There is a registered user
+  Background: There is a registered user and table
     Given Exists a user "user" with password "password"
     Given Exists a table "table" with capacity 4
 
