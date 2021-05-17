@@ -19,7 +19,7 @@ class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
         fields = ['people_number', 'date']
-
+        
 
 class OrderForm(forms.ModelForm):
     class Meta:
