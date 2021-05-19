@@ -1,6 +1,7 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 from django.contrib.auth.models import User
+from django.shortcuts import redirect
 
 
 class Address(models.Model):
@@ -9,6 +10,20 @@ class Address(models.Model):
 
     def __str__(self):
         return self.address_field
+
+    @classmethod
+    def verifier(cls):
+        def wrapper(func):
+            def innner(*args, **kwargs):
+                object_ = cls.objects.get(pk=kwargs["pk"])
+                request = args[1]
+                if object_.user != request.user:
+                    return redirect('profile')
+                return func(*args, **kwargs)
+
+            return innner
+
+        return wrapper
 
     class Meta:
         verbose_name_plural = 'addresses'
@@ -49,7 +64,7 @@ class Order(models.Model):
         (PREPARING, "Preparing"),
         (DELIVERING, "Delivering"),
         (COMPLETED, "Completed"))
-    order_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
     deliver_address = models.ForeignKey('Address', on_delete=models.CASCADE)
     date_order = models.DateTimeField()
     date_created = models.DateTimeField(auto_now_add=True)
@@ -58,6 +73,20 @@ class Order(models.Model):
 
     def __str__(self):
         return f"{type(self).__name__}(id={self.id}, user={self.order_user})"
+
+    @classmethod
+    def verifier(cls):
+        def wrapper(func):
+            def innner(*args, **kwargs):
+                object_ = cls.objects.get(pk=kwargs["pk"])
+                request = args[1]
+                if object_.order_user != request.user:
+                    return redirect('profile')
+                return func(*args, **kwargs)
+
+            return innner
+
+        return wrapper
 
 
 class ProductOrder(models.Model):
@@ -85,3 +114,15 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{type(self).__name__}(table={self.reserved_table}, date={self.date.strftime('%d/%m/%Y - %H:%M')})"
+
+    @classmethod
+    def verifier(cls):
+        def wrapper(func):
+            def innner(*args, **kwargs):
+                object_ = cls.objects.get(pk=kwargs["pk"])
+                request = args[1]
+                if object_.booking_user != request.user:
+                    return redirect('profile')
+                return func(*args, **kwargs)
+            return innner
+        return wrapper

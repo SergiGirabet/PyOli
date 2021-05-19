@@ -17,6 +17,8 @@ from django.views.generic.edit import BaseFormView
 from booking_manager.forms import *
 from booking_manager.models import Order, Booking, Product, ProductOrder, Address, Table
 
+RESTAURANT_ADDRESS = "Carrer de Jaume II, 69, 25001 Lleida"
+
 
 class Login(LoginView):
     template_name = "login.html"
@@ -43,7 +45,7 @@ class Home(TemplateView):
     template_name = "home.html"
 
 
-class ProfileView(TemplateView, LoginRequiredMixin):
+class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = "profile.html"
 
     def get_context_data(self, **kwargs):
@@ -66,45 +68,31 @@ class AddressCreate(CreateView):
         return redirect('profile')
 
 
-def verify_user(model):
-    def inner(func):
-        def wrapper(*args, **kwargs):
-            object_ = model.objects.get(pk=kwargs["pk"])
-            request = args[1]
-            if object_.user != request.user:
-                return redirect('profile')
-            return func(*args, **kwargs)
-
-        return wrapper
-
-    return inner
-
-
-class AddressDelete(DeleteView):
+class AddressDelete(LoginRequiredMixin, DeleteView):
     model = Address
     template_name = 'deletingaddress.html'
     success_url = reverse_lazy('profile')
 
-    @verify_user(model)
+    @model.verifier()
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
-    @verify_user(model)
+    @model.verifier()
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
 
-class AddressEdit(UpdateView):
+class AddressEdit(LoginRequiredMixin, UpdateView):
     model = Address
     template_name = "editaddress.html"
     fields = ["address_field"]
     success_url = reverse_lazy('profile')
 
-    @verify_user(model)
+    @model.verifier()
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
-    @verify_user(model)
+    @model.verifier()
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
@@ -133,12 +121,16 @@ class DeliveryView(LoginRequiredMixin, TemplateView):
                 product_order.save()
                 product.save()
 
-        client = googlemaps.Client(key=os.environ.get("API_KEY"))
         user_address = Address.objects.get(pk=address, user=request.user)
         # restaurant address
-        response = client.distance_matrix("Carrer de Jaume II, 69, 25001 Lleida", user_address.address_field)
-        distance_seconds = response["rows"][0]["elements"][0]["duration"]["value"]
-        average_preparing_time = 20 * 60  # 20 minutes in seconds
+        api_key = os.environ.get("API_KEY")
+        if api_key:
+            client = googlemaps.Client(key=api_key)
+            response = client.distance_matrix(RESTAURANT_ADDRESS, user_address.address_field)
+            distance_seconds = response["rows"][0]["elements"][0]["duration"]["value"]
+        else:
+            distance_seconds = 10 * 60  # 10 minutes if api not available
+        average_preparing_time = 20 * 60  # 20 minutes in seconds for preparing
         expected_date = datetime.fromtimestamp(timezone.now().timestamp() +
                                                distance_seconds + average_preparing_time)
         order.expected_delivery_date = make_aware(expected_date)
@@ -146,16 +138,9 @@ class DeliveryView(LoginRequiredMixin, TemplateView):
         return redirect('profile')
 
 
-class Backoffice(TemplateView):
-    # Show number of current orders
-    # Show current orders (older first)
-    # Show number of current bookings
-    # Show current bookings (for today)
-    # Manage orders, bookings and products ??? We can do it with admin interface
-    # TODO: orders by state ?? And show a counter of the orders by state.
+class Backoffice(LoginRequiredMixin, TemplateView):
     template_name = "backoffice.html"
     form_class = OrderForm
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -172,7 +157,7 @@ class Backoffice(TemplateView):
         return context
 
 
-class OrderUpdateStatus(BaseFormView):
+class OrderUpdateStatus(LoginRequiredMixin, BaseFormView):
     form_class = OrderForm
     success_url = reverse_lazy('backoffice')
 
@@ -183,8 +168,9 @@ class OrderUpdateStatus(BaseFormView):
         return super().form_valid(form)
 
 
-class BookingCreate(FormView):
-    form_class = BookingForm
+class BookingCreate(LoginRequiredMixin, CreateView):
+    model = Booking
+    fields = ['people_number', 'date']
     template_name = 'creatingbooking.html'
     success_url = reverse_lazy('bookings')
 
@@ -201,16 +187,23 @@ class BookingCreate(FormView):
         return HttpResponseRedirect(reverse_lazy('book'))
 
 
-class BookingDelete(DeleteView):
-    form_class = BookingForm
+class BookingDelete(LoginRequiredMixin, DeleteView):
     model = Booking
     template_name = 'deletingbooking.html'
     success_url = reverse_lazy('profile')
 
+    @model.verifier()
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
-class BookingUpdate(UpdateView):
-    form_class = BookingForm
+    @model.verifier()
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class BookingUpdate(LoginRequiredMixin, UpdateView):
     model = Booking
+    fields = ['people_number', 'date']
     template_name = 'creatingbooking.html'
     success_url = reverse_lazy('profile')
 
@@ -228,3 +221,11 @@ class BookingUpdate(UpdateView):
                 return super(BookingUpdate, self).form_valid(form)
 
         return HttpResponseRedirect(reverse_lazy('profile'))
+
+    @model.verifier()
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @model.verifier()
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
