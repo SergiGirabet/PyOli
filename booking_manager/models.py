@@ -2,6 +2,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
+from django.utils import timezone
 
 
 class Address(models.Model):
@@ -68,7 +69,7 @@ class Order(models.Model):
     deliver_address = models.ForeignKey('Address', on_delete=models.CASCADE)
     date_order = models.DateTimeField()
     date_created = models.DateTimeField(auto_now_add=True)
-    expected_delivery_date = models.DateTimeField()
+    expected_delivery_date = models.DateTimeField(default=timezone.now())
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default=PENDING)
 
     def __str__(self):

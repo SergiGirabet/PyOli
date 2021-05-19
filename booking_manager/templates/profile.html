@@ -48,7 +48,7 @@
         <div class="card col-6">
             <ul class="list-group list-group-flush">
                 {% for order in orders %}
-                    <li class="list-group-item">{{ order }}</li>
+                    <li class="list-group-item">{{ order }} Expected delivery: {{ order.expected_delivery_date }}</li>
                 {% empty %}
                     <li class="list-group-item"><i>No orders found. Place an order <a
                             href="{% url 'delivery' %}">here</a></i></li>

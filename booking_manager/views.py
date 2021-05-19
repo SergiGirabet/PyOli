@@ -131,9 +131,9 @@ class DeliveryView(LoginRequiredMixin, TemplateView):
         else:
             distance_seconds = 10 * 60  # 10 minutes if api not available
         average_preparing_time = 20 * 60  # 20 minutes in seconds for preparing
-        expected_date = datetime.fromtimestamp(timezone.now().timestamp() +
-                                               distance_seconds + average_preparing_time)
-        order.expected_delivery_date = make_aware(expected_date)
+        # expected_date = datetime.fromtimestamp(timezone.now().timestamp() +
+        #                                        distance_seconds + average_preparing_time)
+        order.distance_seconds = distance_seconds + average_preparing_time
         order.save()
         return redirect('profile')
 
