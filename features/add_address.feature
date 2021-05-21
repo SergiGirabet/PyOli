@@ -7,7 +7,7 @@ Feature: Add Address
     Given Exists a user "user" with password "password"
 
 
-  Scenario: Add an addres
+  Scenario: Add an address
     Given I login as user "user" with password "password"
     When I add an address
       | address_field                |

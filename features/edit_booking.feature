@@ -4,13 +4,16 @@ Feature: Edit Booking
   I want to edit a book
 
   Background: There is a registered user, table and book
-    #Given Exists a user "user" with password "password"
-    #Given Exists a table "table" with capacity 2
-    Given Exists a book by "user" with password "password" at the table "table" 2 people this "date" day
+    Given Exists a user "user" with password "password"
+    Given Exists a table "table" with capacity 4
+    And I book a table
+      | date                | people_number |
+      | 2021-05-18 19:17:16 | 4             |
 
-  Scenario: Book a table
+  Scenario: Edit the booking of a table
     Given I login as user "user" with password "password"
-    When I edit a book
-      | people_number | date
-      | 1             | 2021-05-18 20:17:16 |
-    Then The new date of the booking is 2021-05-18 20:17:16
+    #When I view the details for the "booking"
+    When I edit the current "book"
+      | date                |
+      | 2021-05-20 20:20:20 |
+    Then The new date of the booking is 2021-05-20 20:20:20

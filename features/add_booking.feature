@@ -5,7 +5,7 @@ Feature: Add Booking
 
   Background: There is a registered user and table
     Given Exists a user "user" with password "password"
-    Given Exists a table "table" with capacity 4
+    And Exists a table "table" with capacity 4
 
 
   Scenario: Book a table
