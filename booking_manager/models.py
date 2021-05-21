@@ -2,7 +2,6 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
-from django.utils import timezone
 
 
 class Address(models.Model):
@@ -133,5 +132,7 @@ class Booking(models.Model):
                 if object_.booking_user != request.user:
                     return redirect('profile')
                 return func(*args, **kwargs)
+
             return innner
+
         return wrapper
