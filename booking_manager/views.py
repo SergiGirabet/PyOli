@@ -7,7 +7,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils import timezone
-from django.utils.timezone import make_aware
 from django.views.generic import FormView, TemplateView, CreateView, DeleteView, UpdateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import UserCreationForm
@@ -122,7 +121,6 @@ class DeliveryView(LoginRequiredMixin, TemplateView):
                 product.save()
 
         user_address = Address.objects.get(pk=address, user=request.user)
-        # restaurant address
         api_key = os.environ.get("API_KEY")
         if api_key:
             client = googlemaps.Client(key=api_key)
@@ -131,9 +129,8 @@ class DeliveryView(LoginRequiredMixin, TemplateView):
         else:
             distance_seconds = 10 * 60  # 10 minutes if api not available
         average_preparing_time = 20 * 60  # 20 minutes in seconds for preparing
-        # expected_date = datetime.fromtimestamp(timezone.now().timestamp() +
-        #                                        distance_seconds + average_preparing_time)
-        order.distance_seconds = distance_seconds + average_preparing_time
+        order.expected_delivery_date = datetime.fromtimestamp(timezone.now().timestamp() +
+                                                distance_seconds + average_preparing_time)
         order.save()
         return redirect('profile')
 
@@ -168,19 +165,20 @@ class OrderUpdateStatus(LoginRequiredMixin, BaseFormView):
         return super().form_valid(form)
 
 
-class BookingCreate(LoginRequiredMixin, CreateView):
-    model = Booking
-    fields = ['people_number', 'date']
+class BookingCreate(LoginRequiredMixin, FormView):
+    form_class = BookingForm
     template_name = 'creatingbooking.html'
-    success_url = reverse_lazy('bookings')
+    success_url = reverse_lazy('profile')
 
     def form_valid(self, form):
-        tables = Table.objects.filter(capacity__gte=form.cleaned_data['people_number'])
+        tables = Table.objects.filter(capacity__gte=form.cleaned_data['people_number']).order_by('capacity')
         for table in tables:
-            bookings = Booking.objects.filter(reserved_table=table, date=form.cleaned_data['date'])
+            bookings = Booking.objects.filter(reserved_table=table, date=form.cleaned_data['date'],
+                                              time_zone=form.cleaned_data['time_zone'])
             if not bookings:
                 book = Booking(booking_user=self.request.user, reserved_table=table,
-                               people_number=form.cleaned_data['people_number'], date=form.cleaned_data['date'])
+                               people_number=form.cleaned_data['people_number'], date=form.cleaned_data['date'],
+                               time_zone=form.cleaned_data['time_zone'])
                 book.save()
                 return super(BookingCreate, self).form_valid(form)
 
@@ -203,7 +201,7 @@ class BookingDelete(LoginRequiredMixin, DeleteView):
 
 class BookingUpdate(LoginRequiredMixin, UpdateView):
     model = Booking
-    fields = ['people_number', 'date']
+    form_class = BookingForm
     template_name = 'creatingbooking.html'
     success_url = reverse_lazy('profile')
 
@@ -212,12 +210,13 @@ class BookingUpdate(LoginRequiredMixin, UpdateView):
 
         tables = Table.objects.filter(capacity__gte=form.cleaned_data['people_number']).order_by('capacity')
         for table in tables:
-            bookings = Booking.objects.filter(reserved_table=table, date=form.cleaned_data['date'])
+            bookings = Booking.objects.filter(reserved_table=table, date=form.cleaned_data['date'],
+                                              time_zone=form.cleaned_data['time_zone'])
             if not bookings:
-                t = table
                 book.people_number = form.cleaned_data['people_number']
                 book.date = form.cleaned_data['date']
-                book.reserved_table = t
+                book.time_zone = form.cleaned_data['time_zone']
+                book.reserved_table = table
                 return super(BookingUpdate, self).form_valid(form)
 
         return HttpResponseRedirect(reverse_lazy('profile'))

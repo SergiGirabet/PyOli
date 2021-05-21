@@ -65,11 +65,11 @@ class Order(models.Model):
         (PREPARING, "Preparing"),
         (DELIVERING, "Delivering"),
         (COMPLETED, "Completed"))
-    order_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
+    order_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="order_user")
     deliver_address = models.ForeignKey('Address', on_delete=models.CASCADE)
     date_order = models.DateTimeField()
     date_created = models.DateTimeField(auto_now_add=True)
-    expected_delivery_date = models.DateTimeField(default=timezone.now())
+    expected_delivery_date = models.DateTimeField()
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default=PENDING)
 
     def __str__(self):
@@ -107,14 +107,22 @@ class Table(models.Model):
 
 
 class Booking(models.Model):
+    TIME_ZONE_CHOICES = [
+        ('1', '12:30 - 14:00'),
+        ('2', '14:00 - 15:30'),
+        ('3', '21:00 - 22:30'),
+        ('4', '22:30 - 00:00'),
+    ]
+
     booking_user = models.ForeignKey(User, on_delete=models.CASCADE)
     reserved_table = models.ForeignKey(Table, on_delete=models.CASCADE)
-    date = models.DateTimeField()
+    date = models.DateField()
+    time_zone = models.CharField(max_length=14, null=True, choices=TIME_ZONE_CHOICES)
 
     people_number = models.IntegerField()
 
     def __str__(self):
-        return f"{type(self).__name__}(table={self.reserved_table}, date={self.date.strftime('%d/%m/%Y - %H:%M')})"
+        return f"{type(self).__name__}(table={self.reserved_table}, date={self.date.strftime('%d/%m/%Y')}, time zone={self.get_time_zone_display()})"
 
     @classmethod
     def verifier(cls):
