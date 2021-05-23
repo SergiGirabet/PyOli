@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import DateInput
 
-from booking_manager.models import ProductOrder, Booking, Order
+from booking_manager.models import ProductOrder, Booking, Order, Table
 
 
 class DeliveryForm(forms.ModelForm):
@@ -30,4 +30,5 @@ class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
         fields = ['people_number', 'date', 'time_zone']
-        widgets = {'date': MyDateInput}
+        widgets = {'date': MyDateInput,
+                   'people_number': forms.NumberInput(attrs={'min': 1, 'max': Table.max_capacity(), 'type': 'number'})}

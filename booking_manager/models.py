@@ -1,6 +1,7 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Max
 from django.shortcuts import redirect
 
 
@@ -100,6 +101,11 @@ class ProductOrder(models.Model):
 
 class Table(models.Model):
     capacity = models.IntegerField()
+
+    @classmethod
+    def max_capacity(cls):
+        max_capacity = cls.objects.aggregate(Max('capacity'))
+        return max_capacity["capacity__max"]
 
     def __str__(self):
         return str(self.id)
