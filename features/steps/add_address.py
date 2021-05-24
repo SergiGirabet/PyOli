@@ -8,8 +8,7 @@ def step_impl(context):
     for row in context.table:
         context.browser.visit(context.get_url('create_address'))
         form = context.browser.find_by_tag('form').first
-        for heading in row.headings:
-            context.browser.fill(heading, row[heading])
+        context.browser.fill('address_field', row['address_field'])
         form.find_by_value('Submit').first.click()
 
 
