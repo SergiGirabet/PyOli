@@ -5,7 +5,7 @@ from behave import *
 use_step_matcher("parse")
 
 
-@then('I remove the "{booking}"')
+@then('I remove the book "{booking}"')
 def step_impl(context, booking):
     from booking_manager.models import Booking
     booking = Booking.objects.get()
@@ -14,7 +14,7 @@ def step_impl(context, booking):
     form.find_by_text('Yes, delete it').click()
 
 
-@then('I cancel the remove of a "booking"')
+@then('I cancel the remove of a book "booking"')
 def step_impl(context):
     from booking_manager.models import Booking
     booking = Booking.objects.get()

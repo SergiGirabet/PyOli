@@ -12,7 +12,7 @@ Feature: Remove a Booking
     When I book a table
       | people_number | date       | time_zone     |
       | 4             | 30/05/2022 | 12:30 - 14:00 |
-    Then I cancel the remove of a "booking"
+    Then I cancel the remove of a book "booking"
     Then There is 1 booking
 
   Scenario: Remove a booking
@@ -20,5 +20,5 @@ Feature: Remove a Booking
     When I book a table
       | people_number | date       | time_zone     |
       | 4             | 30/05/2022 | 12:30 - 14:00 |
-    Then I remove the "booking"
+    Then I remove the book "booking"
     Then There is 0 booking
