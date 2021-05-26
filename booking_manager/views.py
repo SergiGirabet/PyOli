@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 
 import googlemaps
+from behave.formatter import null
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
@@ -107,9 +108,14 @@ class DeliveryView(LoginRequiredMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         querydict: dict = request.POST.dict()
         querydict.pop("csrfmiddlewaretoken")
+
+        if not request.POST.get("address"):
+            return redirect('delivery')
         address = querydict.pop("address")
+
         order = Order.objects.create(deliver_address_id=address, order_user=request.user, date_order=timezone.now(),
                                      expected_delivery_date=timezone.now())
+        total_quantity = 0
         for product_id, quantity in querydict.items():
             quantity = int(quantity)
             product = Product.objects.get(pk=product_id)
@@ -119,6 +125,10 @@ class DeliveryView(LoginRequiredMixin, TemplateView):
                                                             order=order)
                 product_order.save()
                 product.save()
+            total_quantity += quantity
+        if total_quantity == 0:
+            order.delete()
+            return redirect('delivery')
 
         user_address = Address.objects.get(pk=address, user=request.user)
         api_key = os.environ.get("API_KEY")
@@ -130,7 +140,7 @@ class DeliveryView(LoginRequiredMixin, TemplateView):
             distance_seconds = 10 * 60  # 10 minutes if api not available
         average_preparing_time = 20 * 60  # 20 minutes in seconds for preparing
         order.expected_delivery_date = datetime.fromtimestamp(timezone.now().timestamp() +
-                                                distance_seconds + average_preparing_time)
+                                                              distance_seconds + average_preparing_time)
         order.save()
         return redirect('profile')
 
