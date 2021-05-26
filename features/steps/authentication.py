@@ -11,6 +11,12 @@ def step_impl(context, username, password):
     User.objects.create_user(username=username, email='user@example.com', password=password)
 
 
+@given('Exists a super user "{username}" with password "{password}"')
+def step_impl(context, username, password):
+    from django.contrib.auth.models import User
+    User.objects.create_superuser(username=username, email='user@example.com', password=password)
+
+
 @given('I login as user "{username}" with password "{password}"')
 def step_impl(context, username, password):
     context.browser.visit(context.get_url('login'))
