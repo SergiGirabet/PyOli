@@ -1,25 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
+    <span vocab="https://schema.org/" typeof="Product">
+
     <div class="row p-3">
         <form method="POST">
             {{ form }}
             {% csrf_token %}
             {% regroup products by product_category as products_by_category %}
             {% for product_group in products_by_category %}
-                <h1>{{ product_group.grouper }}</h1>
+                <h1>
+                    <span
+                            property="category">{{ product_group.grouper }}
+                    </span>
+                </h1>
                 {% for product in product_group.list %}
                     <div class="pb-3">
                         <div class="card col" style="border: 1px solid black">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-9">
-                                        <h5 class="card-title">{{ product.name }}</h5>
-                                        <p class="card-text">{{ product.description|truncatechars:80 }}</p>
+                                        <h5>
+                                            <span class="card-title" property="name">{{ product.name }}</span>
+                                        </h5>
+                                        <span>
+                                             <p class="card-text">{{ product.description|truncatechars:80 }}</p>
+                                        </span>
                                     </div>
+
                                     <div class="col text-end">
                                         <div class="row">
                                             <div class="col">
-                                                <label for="{{ product.id }}"><a>Quantity: </a></label>
+                                                <span property="identifier">
+                                                    <label
+                                                            for="{{ product.id }}"><a> Quantity: </a>
+                                                    </label>
+                                                </span>
                                             </div>
                                             <div class="col">
                                                 <input type="number" id="{{ product.id }}"
@@ -51,8 +66,7 @@
                     <input class="button" type="submit" value="Order now">
                 </div>
             </div>
-
-
         </form>
     </div>
+    </span>
 {% endblock %}
