@@ -1,2 +1,2 @@
-release: bash -c "python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py makemigrations booking_manager && python3 manage.py migrate booking_manager"
+release: bash -c "echo 'release-----------------------------------------------------------'"
 web: gunicorn pyoli.wsgi
