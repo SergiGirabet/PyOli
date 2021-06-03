@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-    <span vocab="https://schema.org/" typeof="Product">
 
     <div class="row p-3">
         <form method="POST">
@@ -8,6 +7,7 @@
             {% csrf_token %}
             {% regroup products by product_category as products_by_category %}
             {% for product_group in products_by_category %}
+                <span vocab="https://schema.org/" typeof="Product">
                 <h1>
                     <span property="category">{{ product_group.grouper }}</span>
                 </h1>
@@ -27,7 +27,10 @@
                                     <div class="col text-end">
                                         <div class="row">
                                             <div class="col">
-                                                <label property="identifier" for="{{ product.id }}">
+                                                <label>
+                                                    <span property="identifier">
+                                                        for="{{ product.id }}">
+                                                    </span>
                                                     <a> Quantity: </a>
                                                 </label>
                                             </div>
