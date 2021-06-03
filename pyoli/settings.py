@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'pyoli.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd9is78vusdur12',
-        'USER': 'zerxqtvvbrjkel',
-        'PASSWORD': 'bd7f02aed08d07d9fe8dff3fe4fd0c02ecbedfcb8522a6afa9a71179f01ae276',
-        'HOST': 'ec2-54-72-155-238.eu-west-1.compute.amazonaws.com',
+        'NAME': 'dd52d5begptgt6',
+        'USER': 'rsiptupijwyhfa',
+        'PASSWORD': 'bf09d28321ccc931bed4d4121a1fa4e1d0ca9b7c38569f0da13f971c17b9efe2',
+        'HOST': 'ec2-34-255-134-200.eu-west-1.compute.amazonaws.com',
         'PORT': '5432',
     }
 }
