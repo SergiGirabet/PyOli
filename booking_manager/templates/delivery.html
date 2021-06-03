@@ -9,9 +9,7 @@
             {% regroup products by product_category as products_by_category %}
             {% for product_group in products_by_category %}
                 <h1>
-                    <span
-                            property="category">{{ product_group.grouper }}
-                    </span>
+                    <span property="category">{{ product_group.grouper }}</span>
                 </h1>
                 {% for product in product_group.list %}
                     <div class="pb-3">
