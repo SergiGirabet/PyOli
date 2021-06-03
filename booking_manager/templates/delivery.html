@@ -22,19 +22,17 @@
                                         <h5>
                                             <span class="card-title" property="name">{{ product.name }}</span>
                                         </h5>
-                                        <span>
-                                             <p class="card-text">{{ product.description|truncatechars:80 }}</p>
+                                        <span class="card-text" property="description">
+                                            <p>{{ product.description|truncatechars:80 }}</p>
                                         </span>
                                     </div>
-
                                     <div class="col text-end">
                                         <div class="row">
                                             <div class="col">
-                                                <span property="identifier">
-                                                    <label
-                                                            for="{{ product.id }}"><a> Quantity: </a>
-                                                    </label>
-                                                </span>
+                                                <label>
+                                                    <span property="identifier" for="{{ product.id }}"></span>
+                                                    <a> Quantity: </a>
+                                                </label>
                                             </div>
                                             <div class="col">
                                                 <input type="number" id="{{ product.id }}"
