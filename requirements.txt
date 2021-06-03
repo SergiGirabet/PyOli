@@ -3,4 +3,4 @@ gunicorn
 django-heroku
 googlemaps~=4.4.5
 splinter~=0.14.0
-behave~=1.2.6
+behave-django
